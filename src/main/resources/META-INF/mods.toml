@@ -1,0 +1,33 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="m4r1os"
+version="1"
+displayName="M4R1OS HUD & Chat"
+authors="m4r1os, MNV"
+
+description='''
+FiveM-style HUD + chat messages for Minecraft.
+
+Features:
+- Rich markup (emoji/labels/boxes/colors)
+- Staff-only routing / channels
+- Clean, configurable dispatch-style messages
+
+'''
+
+[[dependencies.m4r1os]]
+modId="forge"
+mandatory=true
+versionRange="[36,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.m4r1os]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.16.5]"
+ordering="NONE"
+side="BOTH"
