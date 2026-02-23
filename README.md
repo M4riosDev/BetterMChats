@@ -175,7 +175,7 @@ The compiled `.jar` will be in `build/libs/`.
 
 - **m4r1os** — original concept & development
 - **MNV** — development
-- **SaralisDev** development & Design
+- **SaralisDev** — development & design
 
 ---
 
