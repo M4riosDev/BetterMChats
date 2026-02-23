@@ -1,4 +1,4 @@
-# M4R1OS HUD & Chat — Forge Mod
+# M4R1OS HUD & Chat Forge Mod
 
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.16.5-brightgreen?logo=minecraft)
 ![Forge](https://img.shields.io/badge/Forge-36%2B-orange?logo=curseforge)
@@ -175,6 +175,7 @@ The compiled `.jar` will be in `build/libs/`.
 
 - **m4r1os** — original concept & development
 - **MNV** — development
+- **SaralisDev** development & Design
 
 ---
 
