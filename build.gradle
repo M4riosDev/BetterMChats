@@ -10,13 +10,12 @@
     apply plugin: 'net.minecraftforge.gradle'
     apply plugin: 'eclipse'
     apply plugin: 'maven-publish'
-
+  
     version = '1'
     group = 'com.m4r1os.fivemhud' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
     archivesBaseName = 'fivemchats'
 
-    java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
-
+    java.toolchain.languageVersion = JavaLanguageVersion.of(8)
     println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
     minecraft {
         runs {

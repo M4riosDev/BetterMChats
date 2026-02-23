@@ -37,6 +37,7 @@ public class ModCommands {
         addChannel(d, "robbery",  "robbery",  "ROBBERY",  "#FFA600", false, 0);
         addChannel(d, "anon",     "anon",     "ANONYMOUS","#FF1100", false, 0);
         addChannel(d, "event",    "event",    "EVENT",    "#9B59B6", false, 0);
+        addChannel(d, "ad",       "ad",       "ADVERTISEMENT",    "#00FF15", false, 0);
     }
 
 
