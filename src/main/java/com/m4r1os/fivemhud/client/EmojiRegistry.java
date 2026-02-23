@@ -17,7 +17,7 @@ public class EmojiRegistry {
 
         put("twitter", "textures/gui/icons/twitter.png");
         put("system", "textures/gui/icons/system.png");
-
+        put("ems", "textures/gui/icons/ems.png");
         put("announce", "textures/gui/icons/announce.png");
         put("ooc", "textures/gui/icons/ooc.png");
         put("event", "textures/gui/icons/event.png");
