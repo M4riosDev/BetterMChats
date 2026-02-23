@@ -20,7 +20,7 @@ public class EmojiRegistry {
 
         put("announce", "textures/gui/icons/announce.png");
         put("ooc", "textures/gui/icons/ooc.png");
-
+        put("event", "textures/gui/icons/event.png");
        put("robbery", "textures/gui/icons/robbery.png");
 put("anon",    "textures/gui/icons/anon.png");
 
