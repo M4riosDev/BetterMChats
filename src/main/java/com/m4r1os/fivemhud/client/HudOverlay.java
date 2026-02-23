@@ -374,7 +374,7 @@ public class HudOverlay extends AbstractGui {
                 RenderSystem.color4f(1f, 1f, 1f, alpha);
 
                 int s = ClientHudState.iconSize;
-                int iconY = y + Math.round((m.height - s) / 2.0f)                
+                int iconY = y + Math.round((m.height - s) / 2.0f);                
                 
                 blit(ms, cursorX, iconY, 0, 0, s, s, 16, 16);
             }
