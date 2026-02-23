@@ -4,8 +4,9 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="m4r1os"
-version="1"
+version="1.1.0"
 displayName="M4R1OS HUD & Chat"
+logoFile="logo.png"
 authors="m4r1os, MNV"
 
 description='''
@@ -15,7 +16,6 @@ Features:
 - Rich markup (emoji/labels/boxes/colors)
 - Staff-only routing / channels
 - Clean, configurable dispatch-style messages
-
 '''
 
 [[dependencies.m4r1os]]
