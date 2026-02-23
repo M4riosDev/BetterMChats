@@ -49,16 +49,16 @@ These commands are available to send styled messages through the HUD. Most are o
 
 | Command | Label | Color | Icon | Permission |
 |---|---|---|---|---|
-| `/staff <message>` | STAFF | Purple `#7D3CFF` | 🔧 staff | OP (lvl 2) |
-| `/system <message>` | SYSTEM | Yellow `#F1C40F` | ⚙ system | OP (lvl 2) |
+| `/staff <message>` | STAFF | Purple `#7D3CFF` | 🚀 staff | OP (lvl 2) |
+| `/system <message>` | SYSTEM | Yellow `#FFF200` | 💾 system | OP (lvl 2) |
 | `/police <message>` | POLICE | Blue `#2E6BFF` | 🚔 police | All |
 | `/gov <message>` | GOV | Green `#2ECC71` | 🏛 gov | All |
-| `/twt <message>` | TWITTER | Twitter blue `#1DA1F2` | 🐦 twitter | All |
-| `/announce <message>` | ANNOUNCE | Orange `#FF8C00` | 📢 announce | All |
-| `/ooc <message>` | OOC | Dark gray `#2B2B2B` | 💬 ooc | All |
-| `/robbery <message>` | ROBBERY | Red `#E74C3C` | 🔫 robbery | All |
-| `/anon <message>` | ANON | Yellow `#F1C40F` | 🕵 anon | All |
-| `/event <message>` | EVENT | Purple `#9B59B6` | 📢 announce | All |
+| `/twt <message>` | TWITTER | Twitter Blue `#1DA1F2` | 🐦 twitter | All |
+| `/announce <message>` | ANNOUNCE | Cyan `#34E8EB` | 📢 announce | All |
+| `/ooc <message>` | OOC | Dark gray `#2B2B2B` | 📰 ooc | All |
+| `/robbery <message>` | ROBBERY | Orange `#FFA600` | 💰 robbery | All |
+| `/anon <message>` | ANONONYMOUS | Red `#FF1100` | 🪓 anon | All |
+| `/event <message>` | EVENT | Purple `#9B59B6` | 🏆 event | All |
 
 > **Note:** For `/twt` and `/ooc`, the sender's name is automatically prepended to the message and displayed as `CHANNEL | Username | message`.
 
