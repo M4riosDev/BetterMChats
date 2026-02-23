@@ -31,12 +31,12 @@ public class ModCommands {
         addChannel(d, "police",   "police",   "POLICE",   "#2E6BFF", false, 0);
         addChannel(d, "gov",      "gov",      "GOV",      "#2ECC71", false, 0);
         addChannel(d, "twt",      "twitter",  "TWITTER",  "#1DA1F2", false, 0);
-        addChannel(d, "system",   "system",   "SYSTEM",   "#F1C40F", true,  2);
+        addChannel(d, "system",   "system",   "SYSTEM",   "#FFF200", true,  2);
         addChannel(d, "announce", "announce", "ANNOUNCE", "#FF8C00", false, 0);
         addChannel(d, "ooc",      "ooc",      "OOC",      "#2B2B2B", false, 0);
-        addChannel(d, "robbery",  "robbery",  "ROBBERY",  "#E74C3C", false, 0);
-        addChannel(d, "anon",     "anon",     "ANONYMOUS","#F1C40F", false, 0);
-        addChannel(d, "event",    "announce", "EVENT",    "#9B59B6", false, 0);
+        addChannel(d, "robbery",  "robbery",  "ROBBERY",  "#FFA600", false, 0);
+        addChannel(d, "anon",     "anon",     "ANONYMOUS","#FF1100", false, 0);
+        addChannel(d, "event",    "event",    "EVENT",    "#9B59B6", false, 0);
     }
 
 
