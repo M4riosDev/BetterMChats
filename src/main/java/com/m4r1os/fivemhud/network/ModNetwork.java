@@ -29,6 +29,12 @@ public class ModNetwork {
                 HudConfigPacket::decode,
                 HudConfigPacket::handle
         );
+
+        CHANNEL.registerMessage(nextId(), MeAboveHeadPacket.class,
+                MeAboveHeadPacket::encode,
+                MeAboveHeadPacket::decode,
+                MeAboveHeadPacket::handle
+        );
     }
 
     private static int nextId() {

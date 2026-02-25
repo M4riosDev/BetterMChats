@@ -27,7 +27,7 @@ public class ChannelMsgPacket {
         NetworkEvent.Context c = ctx.get();
         c.enqueueWork(() -> {
             try {
-                FiveMHudMod.LOGGER.info("[FiveMHud] ChannelMsgPacket received: {}", msg.raw);
+                FiveMHudMod.LOGGER.debug("[FiveMHud] ChannelMsgPacket received: {}", msg.raw);
                 Class<?> cls = Class.forName("com.m4r1os.fivemhud.client.HudOverlay");
                 Method m = cls.getDeclaredMethod("addRawMessage", String.class);
                 m.invoke(null, msg.raw);
