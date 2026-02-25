@@ -19,6 +19,9 @@ public class FiveMHudMod {
     public static final String MODID = "m4r1os";
 
     public FiveMHudMod() {
+        LOGGER.info("[FiveMHud] Opened");
+        LOGGER.info("[FiveMHud] Replacing vanilla ChatScreen with FiveMChatScreen");
+
         ModNetwork.init();
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerHudConfig.SPEC);
         MinecraftForge.EVENT_BUS.register(this);
