@@ -1,6 +1,7 @@
 package com.m4r1os.fivemhud.commands;
 
 import com.m4r1os.fivemhud.network.ChannelMsgPacket;
+import com.m4r1os.fivemhud.network.MeAboveHeadPacket;
 import com.m4r1os.fivemhud.network.ModNetwork;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -14,6 +15,25 @@ import net.minecraftforge.fml.network.PacketDistributor;
 public class ModCommands {
 
     public static void register(CommandDispatcher<CommandSource> d) {
+
+        d.register(Commands.literal("me")
+                .requires(src -> src.hasPermissionLevel(0))
+                .then(Commands.argument("action", StringArgumentType.greedyString())
+                        .executes(ctx -> {
+                            ServerPlayerEntity player = ctx.getSource().asPlayer();
+                            String action = StringArgumentType.getString(ctx, "action");
+                            if (action == null) action = "";
+                            action = action.trim();
+                            if (action.isEmpty()) return 0;
+
+                            int durationTicks = 100;
+                            ModNetwork.CHANNEL.send(
+                                    PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
+                                    new MeAboveHeadPacket(player.getUniqueID(), action, durationTicks)
+                            );
+
+                            return 1;
+                        })));
 
         d.register(Commands.literal("hud")
                 .requires(src -> src.hasPermissionLevel(0))
