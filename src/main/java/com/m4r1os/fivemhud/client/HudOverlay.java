@@ -30,7 +30,7 @@ public class HudOverlay extends AbstractGui {
 
     public static void addRawMessage(String raw) {
         Markup.Parsed parsed = Markup.parse(raw);
-        FiveMHudMod.LOGGER.info("[FiveMHud] addRawMessage raw={} parsed{boxed={},bg=#{},label={},emoji={},text={}}",
+        FiveMHudMod.LOGGER.debug("[FiveMHud] addRawMessage raw={} parsed{boxed={},bg=#{},label={},emoji={},text={}}",
                 raw,
                 parsed.boxed,
                 Integer.toHexString(parsed.bgColor & 0xFFFFFF),
@@ -141,7 +141,6 @@ public class HudOverlay extends AbstractGui {
     @SubscribeEvent
     public static void onGuiOpen(GuiOpenEvent e) {
         if (e.getGui() instanceof ChatScreen) {
-            FiveMHudMod.LOGGER.info("[FiveMHud] Replacing vanilla ChatScreen with FiveMChatScreen");
             e.setGui(new FiveMChatScreen());
         }
     }
@@ -185,7 +184,7 @@ public class HudOverlay extends AbstractGui {
 
             if (isSystem) {
                 String raw = "[emoji=system][label=SYSTEM][box][color=#F1C40F] " + plain;
-                FiveMHudMod.LOGGER.info("[FiveMHud] SYSTEM intercept typeId={} typeObj={} msg={}", typeId, typeObj, plain);
+                FiveMHudMod.LOGGER.debug("[FiveMHud] SYSTEM intercept typeId={} typeObj={} msg={}", typeId, typeObj, plain);
                 addRawMessage(raw);
                 e.setCanceled(true);
             }
@@ -364,7 +363,7 @@ public class HudOverlay extends AbstractGui {
         if (ClientHudState.showIcon && p.emojiKey != null && !p.emojiKey.isEmpty()) {
             ResourceLocation rl = EmojiRegistry.get(p.emojiKey);
             if (rl == null) {
-                FiveMHudMod.LOGGER.info("[FiveMHud] Missing icon mapping for emojiKey={}", p.emojiKey);
+                FiveMHudMod.LOGGER.warn("[FiveMHud] Missing icon mapping for emojiKey={}", p.emojiKey);
             }
             if (rl != null) {
                 mc.getTextureManager().bindTexture(rl);
