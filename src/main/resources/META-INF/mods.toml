@@ -3,11 +3,11 @@ loaderVersion="[36,)"
 license="All Rights Reserved"
 
 [[mods]]
-modId="fvchats"
+modId="BetterMChats"
 version="1.1.1"
 displayName="M4R1OS HUD & Chat"
 logoFile="logo.png"
-authors="m4r1os, MNV"
+authors="m4r1os, MNV, Saralis Dev"
 
 description='''
 FiveM-style HUD + chat messages for Minecraft.
