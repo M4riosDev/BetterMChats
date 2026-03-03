@@ -11,7 +11,7 @@
     apply plugin: 'eclipse'
     apply plugin: 'maven-publish'
   
-    version = '1.1.0'
+    version = '1.1.1'
     group = 'com.m4r1os.fivemhud' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
     archivesBaseName = 'fivemchats'
 
