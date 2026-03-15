@@ -1,8 +1,8 @@
-package com.m4r1os.fivemhud;
+package com.m4r1os.BetterMChats;
 
-import com.m4r1os.fivemhud.config.ServerHudConfig;
-import com.m4r1os.fivemhud.network.HudConfigPacket;
-import com.m4r1os.fivemhud.network.ModNetwork;
+import com.m4r1os.BetterMChats.config.ServerHudConfig;
+import com.m4r1os.BetterMChats.network.HudConfigPacket;
+import com.m4r1os.BetterMChats.network.ModNetwork;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;

@@ -1,4 +1,4 @@
-package com.m4r1os.fivemhud.network;
+package com.m4r1os.BetterMChats.network;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -70,7 +70,7 @@ public class HudConfigPacket {
         NetworkEvent.Context c = ctx.get();
         c.enqueueWork(() -> {
             try {
-                Class<?> cls = Class.forName("com.m4r1os.fivemhud.client.ClientHudState");
+                Class<?> cls = Class.forName("com.m4r1os.BetterMChats.client.ClientHudState");
                 Method m = cls.getDeclaredMethod(
                         "apply",
                         int.class, int.class, int.class, int.class, int.class, int.class,

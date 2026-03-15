@@ -1,7 +1,9 @@
-package com.m4r1os.fivemhud.commands;
+package com.m4r1os.BetterMChats.commands;
 
-import com.m4r1os.fivemhud.network.ChannelMsgPacket;
-import com.m4r1os.fivemhud.network.ModNetwork;
+import com.m4r1os.BetterMChats.network.ChannelMsgPacket;
+import com.m4r1os.BetterMChats.network.ClearChatsPacket;
+import com.m4r1os.BetterMChats.network.MeAboveHeadPacket;
+import com.m4r1os.BetterMChats.network.ModNetwork;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.command.CommandSource;
@@ -15,6 +17,25 @@ public class ModCommands {
 
     public static void register(CommandDispatcher<CommandSource> d) {
 
+        d.register(Commands.literal("me")
+                .requires(src -> src.hasPermissionLevel(0))
+                .then(Commands.argument("action", StringArgumentType.greedyString())
+                        .executes(ctx -> {
+                            ServerPlayerEntity player = ctx.getSource().asPlayer();
+                            String action = StringArgumentType.getString(ctx, "action");
+                            if (action == null) action = "";
+                            action = action.trim();
+                            if (action.isEmpty()) return 0;
+
+                            int durationTicks = 100;
+                            ModNetwork.CHANNEL.send(
+                                    PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
+                                    new MeAboveHeadPacket(player.getUniqueID(), action, durationTicks)
+                            );
+
+                            return 1;
+                        })));
+
         d.register(Commands.literal("hud")
                 .requires(src -> src.hasPermissionLevel(0))
                 .then(Commands.argument("raw", StringArgumentType.greedyString())
@@ -26,6 +47,35 @@ public class ModCommands {
                             return 1;
                         })));
 
+
+        // /clearchats all | user <name> | type <channel>
+        d.register(Commands.literal("clearchats")
+                .requires(src -> src.hasPermissionLevel(2))
+                .then(Commands.literal("all")
+                        .executes(ctx -> {
+                            broadcastClear(ctx.getSource().getServer(), "all", "");
+                            ctx.getSource().sendFeedback(
+                                    new StringTextComponent("[m4r1os] Cleared all chats."), false);
+                            return 1;
+                        }))
+                .then(Commands.literal("user")
+                        .then(Commands.argument("username", StringArgumentType.word())
+                                .executes(ctx -> {
+                                    String name = StringArgumentType.getString(ctx, "username");
+                                    broadcastClear(ctx.getSource().getServer(), "user", name);
+                                    ctx.getSource().sendFeedback(
+                                            new StringTextComponent("[m4r1os] Cleared chats for user: " + name), false);
+                                    return 1;
+                                })))
+                .then(Commands.literal("type")
+                        .then(Commands.argument("channel", StringArgumentType.word())
+                                .executes(ctx -> {
+                                    String channel = StringArgumentType.getString(ctx, "channel");
+                                    broadcastClear(ctx.getSource().getServer(), "type", channel);
+                                    ctx.getSource().sendFeedback(
+                                            new StringTextComponent("[m4r1os] Cleared chats of type: " + channel), false);
+                                    return 1;
+                                }))));
 
         addChannel(d, "staff",    "staff",    "STAFF",    "#7D3CFF", true,  2);
         addChannel(d, "police",   "police",   "POLICE",   "#2E6BFF", false, 0);
@@ -84,6 +134,16 @@ public class ModCommands {
                         })));
     }
 
+
+    private static void broadcastClear(MinecraftServer server, String mode, String value) {
+        ClearChatsPacket pkt = new ClearChatsPacket(mode, value);
+        for (ServerPlayerEntity p : server.getPlayerList().getPlayers()) {
+            ModNetwork.CHANNEL.send(
+                    PacketDistributor.PLAYER.with(() -> p),
+                    pkt
+            );
+        }
+    }
 
     private static void sendToAll(MinecraftServer server, String raw) {
         for (ServerPlayerEntity p : server.getPlayerList().getPlayers()) {

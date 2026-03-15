@@ -1,4 +1,4 @@
-package com.m4r1os.fivemhud.config;
+package com.m4r1os.BetterMChats.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 

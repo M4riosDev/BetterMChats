@@ -1,4 +1,4 @@
-package com.m4r1os.fivemhud.client;
+package com.m4r1os.BetterMChats.client;
 
 public class ClientHudState {
 

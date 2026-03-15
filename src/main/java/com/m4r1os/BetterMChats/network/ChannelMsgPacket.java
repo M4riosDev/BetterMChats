@@ -1,6 +1,6 @@
-package com.m4r1os.fivemhud.network;
+package com.m4r1os.BetterMChats.network;
 
-import com.m4r1os.fivemhud.FiveMHudMod;
+import com.m4r1os.BetterMChats.FiveMHudMod;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -27,8 +27,8 @@ public class ChannelMsgPacket {
         NetworkEvent.Context c = ctx.get();
         c.enqueueWork(() -> {
             try {
-                FiveMHudMod.LOGGER.info("[FiveMHud] ChannelMsgPacket received: {}", msg.raw);
-                Class<?> cls = Class.forName("com.m4r1os.fivemhud.client.HudOverlay");
+                FiveMHudMod.LOGGER.debug("[FiveMHud] ChannelMsgPacket received: {}", msg.raw);
+                Class<?> cls = Class.forName("com.m4r1os.BetterMChats.client.HudOverlay");
                 Method m = cls.getDeclaredMethod("addRawMessage", String.class);
                 m.invoke(null, msg.raw);
             } catch (Throwable t) {

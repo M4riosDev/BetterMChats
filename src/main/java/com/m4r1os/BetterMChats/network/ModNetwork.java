@@ -1,6 +1,6 @@
-package com.m4r1os.fivemhud.network;
+package com.m4r1os.BetterMChats.network;
 
-import com.m4r1os.fivemhud.FiveMHudMod;
+import com.m4r1os.BetterMChats.FiveMHudMod;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -28,6 +28,18 @@ public class ModNetwork {
                 HudConfigPacket::encode,
                 HudConfigPacket::decode,
                 HudConfigPacket::handle
+        );
+
+        CHANNEL.registerMessage(nextId(), MeAboveHeadPacket.class,
+                MeAboveHeadPacket::encode,
+                MeAboveHeadPacket::decode,
+                MeAboveHeadPacket::handle
+        );
+
+        CHANNEL.registerMessage(nextId(), ClearChatsPacket.class,
+                ClearChatsPacket::encode,
+                ClearChatsPacket::decode,
+                ClearChatsPacket::handle
         );
     }
 

@@ -1,4 +1,4 @@
-package com.m4r1os.fivemhud.client;
+package com.m4r1os.BetterMChats.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
