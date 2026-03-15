@@ -35,6 +35,12 @@ public class ModNetwork {
                 MeAboveHeadPacket::decode,
                 MeAboveHeadPacket::handle
         );
+
+        CHANNEL.registerMessage(nextId(), ClearChatPacket.class,
+                ClearChatPacket::encode,
+                ClearChatPacket::decode,
+                ClearChatPacket::handle
+        );
     }
 
     private static int nextId() {

@@ -28,6 +28,11 @@ public class HudOverlay extends AbstractGui {
 
     public static int maxHistoryEntries = 500;
 
+    public static void clearAllMessages() {
+        ENTRIES.clear();
+        HISTORY.clear();
+    }
+
     public static void addRawMessage(String raw) {
         Markup.Parsed parsed = Markup.parse(raw);
         FiveMHudMod.LOGGER.debug("[FiveMHud] addRawMessage raw={} parsed{boxed={},bg=#{},label={},emoji={},text={}}",
