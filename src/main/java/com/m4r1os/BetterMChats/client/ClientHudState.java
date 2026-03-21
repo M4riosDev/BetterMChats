@@ -2,7 +2,6 @@ package com.m4r1os.BetterMChats.client;
 
 public class ClientHudState {
 
-    // anchor: 0=TOP_RIGHT, 1=TOP_LEFT, 2=BOTTOM_RIGHT, 3=BOTTOM_LEFT
     public static volatile int anchor = 1; 
 
     public static volatile int offsetX = 8;
@@ -21,7 +20,7 @@ public class ClientHudState {
 
     public static void apply(int anchor, int offsetX, int offsetY, int width, int lineHeight, int gap,
                              int maxEntries, int lifeMs, int fadeMs, boolean showIcon, int iconSize) {
-        ClientHudState.anchor = 1;
+        ClientHudState.anchor = anchor;
         ClientHudState.offsetX = clamp(offsetX, 0, 500);
         ClientHudState.offsetY = clamp(offsetY, 0, 500);
         ClientHudState.width = clamp(width, 120, 260);

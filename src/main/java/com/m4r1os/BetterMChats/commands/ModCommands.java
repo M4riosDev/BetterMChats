@@ -196,7 +196,10 @@ public class ModCommands {
         if (roleRaw == null) return -1;
         String role = roleRaw.trim().toLowerCase(Locale.ROOT);
 
-        // Allow any role name, match by permission level or group
+        if (!role.equals("admin") && !role.equals("staff") && !role.equals("user")) {
+            return -2;
+        }
+
         int count = 0;
         for (ServerPlayerEntity p : server.getPlayerList().getPlayers()) {
             if (matchesRole(p, role)) {
@@ -208,16 +211,17 @@ public class ModCommands {
             }
         }
         
-        // If no players matched, return error
-        if (count == 0) return -1;
-        
         return count;
     }
 
     private static int runClearByRole(CommandSource source, String role) {
         int cleared = clearChatsByRole(source.getServer(), role);
-        if (cleared < 0) {
+        if (cleared == -2) {
             source.sendErrorMessage(new StringTextComponent("[m4r1os] invalid role. Use: admin, staff, user."));
+            return 0;
+        }
+        if (cleared == 0) {
+            source.sendErrorMessage(new StringTextComponent("[m4r1os] no players found with role '" + role + "'."));
             return 0;
         }
 
@@ -255,7 +259,7 @@ public class ModCommands {
 
     private static boolean matchesRole(ServerPlayerEntity p, String role) {
         if ("admin".equals(role)) {
-            return p.hasPermissionLevel(3);
+            return p.hasPermissionLevel(3) && !p.hasPermissionLevel(4);
         }
         if ("staff".equals(role)) {
             return p.hasPermissionLevel(2) && !p.hasPermissionLevel(3);
@@ -263,9 +267,6 @@ public class ModCommands {
         if ("user".equals(role)) {
             return !p.hasPermissionLevel(2);
         }
-        
-        // For other group names (police, gov, etc), don't match any player
-        // unless we have explicit player-to-group mapping
         return false;
     }
 

@@ -47,7 +47,7 @@ public class FiveMChatScreen extends ChatScreen {
             clampScroll();
             return true;
         }
-        if (keyCode == 269) { // End
+        if (keyCode == 269) {
             scrollEntries = 0;
             clampScroll();
             return true;

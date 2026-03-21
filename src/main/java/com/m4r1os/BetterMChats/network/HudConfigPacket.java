@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 
 
 public class HudConfigPacket {
-    // anchor: 0=TOP_RIGHT, 1=TOP_LEFT, 2=BOTTOM_RIGHT, 3=BOTTOM_LEFT
     public final int anchor;
     public final int offsetX;
     public final int offsetY;
