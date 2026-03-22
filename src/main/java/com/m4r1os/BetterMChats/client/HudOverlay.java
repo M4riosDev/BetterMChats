@@ -42,6 +42,12 @@ public class HudOverlay extends AbstractGui {
                 parsed.label,
                 parsed.emojiKey,
                 parsed.text);
+        
+        if (MuteManager.isChannelMuted(parsed.label)) {
+            FiveMHudMod.LOGGER.debug("[FiveMHud] Message from muted channel '{}' - ignoring", parsed.label);
+            return;
+        }
+        
         long now = System.currentTimeMillis();
         ENTRIES.add(0, new Entry(parsed, now));
         while (ENTRIES.size() > ClientHudState.maxEntries) ENTRIES.remove(ENTRIES.size() - 1);

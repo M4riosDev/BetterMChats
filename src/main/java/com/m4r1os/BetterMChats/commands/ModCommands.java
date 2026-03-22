@@ -4,6 +4,7 @@ import com.m4r1os.BetterMChats.network.ChannelMsgPacket;
 import com.m4r1os.BetterMChats.network.ClearChatPacket;
 import com.m4r1os.BetterMChats.network.MeAboveHeadPacket;
 import com.m4r1os.BetterMChats.network.ModNetwork;
+import com.m4r1os.BetterMChats.util.RateLimiter;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
@@ -18,10 +19,30 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.Locale;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class ModCommands {
 
     private static final List<String> REGISTERED_GROUPS = new ArrayList<>();
+    private static final RateLimiter RATE_LIMITER = new RateLimiter();
+    
+    private static final Map<String, Long> CHANNEL_COOLDOWNS = new HashMap<>();
+    
+    static {
+        CHANNEL_COOLDOWNS.put("ooc", 3000L);        
+        CHANNEL_COOLDOWNS.put("twt", 3000L);       
+        CHANNEL_COOLDOWNS.put("staff", 1000L);     
+        CHANNEL_COOLDOWNS.put("police", 2000L);    
+        CHANNEL_COOLDOWNS.put("gov", 2000L);        
+        CHANNEL_COOLDOWNS.put("system", 1000L);    
+        CHANNEL_COOLDOWNS.put("announce", 5000L);   
+        CHANNEL_COOLDOWNS.put("robbery", 2000L);    
+        CHANNEL_COOLDOWNS.put("anon", 3000L);       
+        CHANNEL_COOLDOWNS.put("event", 3000L);      
+        CHANNEL_COOLDOWNS.put("ems", 2000L);        
+        CHANNEL_COOLDOWNS.put("ad", 5000L);        
+    }
 
     private static final SuggestionProvider<CommandSource> GROUP_SUGGESTIONS = (ctx, builder) -> {
         for (String group : REGISTERED_GROUPS) {
@@ -130,6 +151,17 @@ public class ModCommands {
                         .executes(ctx -> {
 
                             String msg = StringArgumentType.getString(ctx, "message");
+                            ServerPlayerEntity player = ctx.getSource().asPlayer();
+                            Long cooldown = CHANNEL_COOLDOWNS.getOrDefault(cmd, 3000L);
+                            
+                            if (!RATE_LIMITER.canMessage(player.getUniqueID(), cmd, cooldown)) {
+                                long remaining = RATE_LIMITER.getRemainingCooldown(player.getUniqueID(), cmd, cooldown);
+                                int seconds = (int) Math.ceil(remaining / 1000.0);
+                                ctx.getSource().sendFeedback(
+                                    new StringTextComponent("[m4r1os] You must wait " + seconds + " second(s) before sending another /" + cmd + " message."),
+                                    false);
+                                return 0;
+                            }
 
                             String sender = ctx.getSource().getName();
                             if (label.equalsIgnoreCase("TWITTER") || label.equalsIgnoreCase("OOC")) {

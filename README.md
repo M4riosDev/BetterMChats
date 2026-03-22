@@ -3,7 +3,7 @@
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.16.5-brightgreen?logo=minecraft)
 ![Forge](https://img.shields.io/badge/Forge-36%2B-orange?logo=curseforge)
 ![Java](https://img.shields.io/badge/Java-8%2B-red?logo=openjdk)
-![Version](https://img.shields.io/badge/Version-1.1.2-blue)
+![Version](https://img.shields.io/badge/Version-1.1.3-blue)
 
 > **FiveM-style chat channels and HUD overlay for Minecraft Forge 1.16.5**
 
@@ -61,6 +61,30 @@ These commands are available to send styled messages through the HUD. Most are o
 | `/event <message>` | EVENT | Purple `#9B59B6` | 🏆 event | All |
 
 > **Note:** For `/twt` and `/ooc`, the sender's name is automatically prepended to the message and displayed as `CHANNEL | Username | message`.
+
+---
+
+## Channel Muting (v1.1.3+)
+
+You can now mute specific channels to hide them from your HUD overlay. Muted channels are stored locally on your client and persist across client restarts.
+
+### Mute Commands
+
+| Command | Description |
+|---|---|
+| `/hudmute <channel>` | Mute a channel (e.g., `/hudmute ooc`, `/hudmute police`) |
+| `/hudunmute <channel>` | Unmute a channel |
+| `/hudmuted` | List all currently muted channels |
+
+### Examples
+
+```
+/hudmute ooc          # Hide OOC messages
+/hudmute twitter      # Hide Twitter messages
+/hudmute staff        # Hide staff channel
+/hudunmute police     # Show police messages again
+/hudmuted             # See list: "Muted channels: OOC, STAFF"
+```
 
 ---
 
