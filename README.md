@@ -41,31 +41,10 @@ Each Minecraft version is maintained in a separate branch:
 | 1.19.4 | Planned | Coming soon |
 | 1.20.1 | Planned | Coming soon |
 
-> Always open the correct branch for your Minecraft version.
 
----
-
-## Quick Start
-
-1. Open your version branch  
-2. Download the `.jar`  
-3. Place it in: mods/ 
-4. Launch Minecraft with Forge  
-
-
----
 
 ## Author
 
 - **m4r1os** — original concept & development
 - **MNV** — development
 - **SaralisDev** — development & design
-
----
-
-## Support
-
-If you like the project:
-- Star the repository  
-- Fork it  
-- Suggest improvements  
