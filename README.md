@@ -9,7 +9,7 @@ Built for roleplay servers and immersive gameplay
   <img src="https://img.shields.io/badge/Minecraft-Multi--Version-green?logo=minecraft">
   <img src="https://img.shields.io/badge/Forge-Supported-orange?logo=curseforge">
   <img src="https://img.shields.io/badge/Status-Active-blue">
-  <img src="https://img.shields.io/badge/Version-1.1.3-blue">
+  <img src="https://img.shields.io/badge/Version-1.1.4-blue">
 </p>
 
 ---
