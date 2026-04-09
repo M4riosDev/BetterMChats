@@ -3,7 +3,7 @@
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.16.5-brightgreen?logo=minecraft)
 ![Forge](https://img.shields.io/badge/Forge-36%2B-orange?logo=curseforge)
 ![Java](https://img.shields.io/badge/Java-8%2B-red?logo=openjdk)
-![Version](https://img.shields.io/badge/Version-1.1.3-blue)
+![Version](https://img.shields.io/badge/Version-1.1.4-blue)
 
 > FiveM-style chat channels and HUD overlay for Minecraft Forge 1.16.5
 
