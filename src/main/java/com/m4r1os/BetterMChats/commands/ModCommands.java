@@ -90,8 +90,7 @@ public class ModCommands {
                         .executes(ctx -> {
                             sendToAll(ctx.getSource().getServer(),
                                     StringArgumentType.getString(ctx, "raw"));
-                            ctx.getSource().sendSuccess(
-                                    Component.literal("[m4r1os] sent HUD raw."), false);
+                                ctx.getSource().sendSuccess(Component.literal("[m4r1os] sent HUD raw."), false);
                             return 1;
                         })));
 
@@ -185,8 +184,7 @@ public class ModCommands {
                                 sendToAll(server, raw);
                             }
 
-                            ctx.getSource().sendSuccess(
-                                    Component.literal("[m4r1os] sent /" + cmd + "."), false);
+                            ctx.getSource().sendSuccess(Component.literal("[m4r1os] sent /" + cmd + "."), false);
 
                             return 1;
                         })));
@@ -260,7 +258,7 @@ public class ModCommands {
         }
 
         source.sendSuccess(
-                Component.literal("[m4r1os] cleared chats for role '" + role + "' (" + cleared + ")."),
+            Component.literal("[m4r1os] cleared chats for role '" + role + "' (" + cleared + ")."),
                 false);
         return 1;
     }
@@ -273,7 +271,7 @@ public class ModCommands {
         }
 
         source.sendSuccess(
-                Component.literal("[m4r1os] cleared chats for player '" + username + "' (" + cleared + ")."),
+            Component.literal("[m4r1os] cleared chats for player '" + username + "' (" + cleared + ")."),
                 false);
         return 1;
     }

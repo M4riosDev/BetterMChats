@@ -1,11 +1,11 @@
 package com.m4r1os.BetterMChats.client;
 
 import com.m4r1os.BetterMChats.FiveMHudMod;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 @EventBusSubscriber(modid = FiveMHudMod.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.FORGE)
 public class HudOverlay {
@@ -35,7 +36,7 @@ public class HudOverlay {
 
     public static void addRawMessage(String raw) {
         Markup.Parsed parsed = Markup.parse(raw);
-        FiveMHudMod.LOGGER.debug("[FiveMHud] addRawMessage raw={} parsed{boxed={},bg=#{},label={},emoji={},text={}}",
+        FiveMHudMod.LOGGER.debug("[FiveMHud] addRawMessage raw={} parsed{{boxed={},bg=#{},label={},emoji={},text={}}}",
                 raw, parsed.boxed,
                 Integer.toHexString(parsed.bgColor & 0xFFFFFF),
                 parsed.label, parsed.emojiKey, parsed.text);
@@ -147,9 +148,10 @@ public class HudOverlay {
                 return;
             }
 
-
-            String typeName = e.getBoundChatType().toString().toLowerCase();
-            boolean isSystem = typeName.contains("system") || typeName.contains("game_info");
+                // Keep this compatible across Forge 1.19.4 variants without hard-binding chat type internals.
+                Object boundType = e.getBoundChatType();
+                String boundText = (boundType == null) ? "" : boundType.toString().toLowerCase(Locale.ROOT);
+                boolean isSystem = boundText.contains("system") || boundText.contains("game_info");
 
             if (isSystem) {
                 String raw = "[emoji=system][label=SYSTEM][box][color=#F1C40F] " + plain;
@@ -300,15 +302,12 @@ public class HudOverlay {
         if (ClientHudState.showIcon && p.emojiKey != null && !p.emojiKey.isEmpty()) {
             ResourceLocation rl = EmojiRegistry.get(p.emojiKey);
             if (rl != null) {
-                RenderSystem.setShader(net.minecraft.client.renderer.GameRenderer::getPositionTexShader);
-                RenderSystem.setShaderTexture(0, rl);
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-                RenderSystem.disableDepthTest();
-                RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
                 int s = ClientHudState.iconSize;
                 int iconY = y + Math.round((m.height - s) / 2.0f);
-                blitIcon(poseStack, cursorX, iconY, s, s);
+                RenderSystem.setShaderTexture(0, rl);
+                RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
+                GuiComponent.blit(poseStack, cursorX, iconY, 0, 0, s, s, 14, 14);
+                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             }
         }
 
@@ -316,7 +315,7 @@ public class HudOverlay {
         int ty = y + pad;
         int lineH = Math.max(9, baseLineH);
         for (String ln : m.lines) {
-            font.drawShadow(poseStack, ln, m.textX, ty, msgColor);
+            font.draw(poseStack, ln, m.textX, ty, msgColor);
             ty += lineH;
         }
 
@@ -330,10 +329,5 @@ public class HudOverlay {
             this.parsed = parsed;
             this.createdAt = createdAt;
         }
-    }
-
-    private static void blitIcon(PoseStack poseStack, int x, int y, int w, int h) {
-        RenderSystem.setShader(net.minecraft.client.renderer.GameRenderer::getPositionTexShader);
-        GuiComponent.blit(poseStack, x, y, 0, 0, w, h, 14, 14);
     }
 }

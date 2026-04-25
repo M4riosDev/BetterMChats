@@ -1,9 +1,9 @@
 package com.m4r1os.BetterMChats.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.ChatScreen;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.List;
 
@@ -31,26 +31,10 @@ public class FiveMChatScreen extends ChatScreen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == 266) {
-            scrollEntries += 10;
-            clampScroll();
-            return true;
-        }
-        if (keyCode == 267) {
-            scrollEntries -= 10;
-            clampScroll();
-            return true;
-        }
-        if (keyCode == 268) {
-            scrollEntries = Integer.MAX_VALUE;
-            clampScroll();
-            return true;
-        }
-        if (keyCode == 269) {
-            scrollEntries = 0;
-            clampScroll();
-            return true;
-        }
+        if (keyCode == 266) { scrollEntries += 10; clampScroll(); return true; }
+        if (keyCode == 267) { scrollEntries -= 10; clampScroll(); return true; }
+        if (keyCode == 268) { scrollEntries = Integer.MAX_VALUE; clampScroll(); return true; }
+        if (keyCode == 269) { scrollEntries = 0; clampScroll(); return true; }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
@@ -61,6 +45,7 @@ public class FiveMChatScreen extends ChatScreen {
         if (scrollEntries > max) scrollEntries = max;
     }
 
+    // 1.19.4 uses PoseStack in screen render methods.
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         super.render(poseStack, mouseX, mouseY, partialTicks);
@@ -106,7 +91,6 @@ public class FiveMChatScreen extends ChatScreen {
         if (message == null) return;
         String m = message.trim();
         if (m.isEmpty()) return;
-
         this.handleChatInput(m, true);
     }
 

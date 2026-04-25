@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[43,)"
+loaderVersion="[45,)"
 license="All Rights Reserved"
 
 [[mods]]
@@ -21,13 +21,13 @@ Features:
 [[dependencies.m4r1os]]
 modId="forge"
 mandatory=true
-versionRange="[43,)"
+versionRange="[45,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.m4r1os]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.19.2)"
+versionRange="[1.19.4,1.20)"
 ordering="NONE"
 side="BOTH"

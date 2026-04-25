@@ -42,7 +42,7 @@ public class ServerHudSync {
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e) {
         Player player = e.getEntity();
-        if (player == null || player.getLevel().isClientSide()) return;
+        if (player == null || player.level.isClientSide) return;
         if (!(player instanceof ServerPlayer)) return;
 
         ServerPlayer sp = (ServerPlayer) player;

@@ -66,6 +66,8 @@ public class MeAboveHeadRenderer {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && mc.player.distanceTo(p) > 64.0f) return;
 
+        // 1.19.4: RenderNameTagEvent no longer provides PoseStack/MultiBufferSource directly.
+        // We use the event's poseStack and multiBufferSource getters introduced in 1.19.4.
         PoseStack poseStack = e.getPoseStack();
         MultiBufferSource buffer = e.getMultiBufferSource();
         int light = e.getPackedLight();
@@ -92,8 +94,8 @@ public class MeAboveHeadRenderer {
         float bgOpacity = mc.options.textBackgroundOpacity().get().floatValue();
         int bg = ((int) (bgOpacity * 255.0F) << 24);
 
-        font.drawInBatch(text, x, 0f, 0xFFFFFF, false, poseStack.last().pose(), buffer, true, bg, light);
-        font.drawInBatch(text, x, 0f, 0xFFFFFF, false, poseStack.last().pose(), buffer, false, 0, light);
+        font.drawInBatch(text, x, 0f, 0xFFFFFF, false, poseStack.last().pose(), buffer, Font.DisplayMode.SEE_THROUGH, bg, light);
+        font.drawInBatch(text, x, 0f, 0xFFFFFF, false, poseStack.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, light);
 
         poseStack.popPose();
     }
