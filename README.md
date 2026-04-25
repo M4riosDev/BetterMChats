@@ -38,7 +38,7 @@ Each Minecraft version is maintained in a separate branch:
 | 1.17.1 | Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.17.1) |
 | 1.18.2 | Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.18.2) |
 | 1.19.2 | Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.19.2) |
-| 1.19.4 | Planned | Coming soon |
+| 1.19.4 | Planned | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.19.4) |
 | 1.20.1 | Planned | Coming soon |
 
 
