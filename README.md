@@ -27,8 +27,8 @@ A server-side mod (with a required client component) that replaces Minecraft's d
 
 | Dependency | Version |
 |---|---|
-| Minecraft | 1.19.2 |
-| Minecraft Forge | 43+ |
+| Minecraft | 1.19.4 |
+| Minecraft Forge | 45+ |
 | Java | 17+ |
 
 > ⚠️ Both the **server** and **client** must have this mod installed.
