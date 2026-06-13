@@ -71,14 +71,22 @@ public class HudOverlay {
         int yStart;
         boolean growDown;
 
-        if (chatOpen) {
-            x = offX;
+        
+        switch (ClientHudState.anchor) {
+            case 1: // TOP_LEFT
+                x = offX; yStart = offY; growDown = true; break;
+            case 2: // BOTTOM_RIGHT
+                x = screenWidth - width - offX; yStart = screenHeight - 48 - offY; growDown = false; break;
+            case 3: // BOTTOM_LEFT
+                x = offX; yStart = screenHeight - 48 - offY; growDown = false; break;
+            case 0: // TOP_RIGHT
+            default:
+                x = screenWidth - width - offX; yStart = offY; growDown = true; break;
+        }
+
+        if (chatOpen && growDown) {
             yStart = screenHeight - 48 - offY;
             growDown = false;
-        } else {
-            x = offX;
-            yStart = offY;
-            growDown = true;
         }
 
         long now = System.currentTimeMillis();
