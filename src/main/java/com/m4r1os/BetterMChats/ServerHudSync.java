@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.concurrent.CompletableFuture;
 
 @Mod.EventBusSubscriber(modid = FiveMHudMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ServerHudSync {
@@ -69,7 +70,8 @@ public class ServerHudSync {
         if (!ADMIN_UPDATE_NOTICE_ENABLED) return;
 
         if (!UPDATE_CHECK_DONE) {
-            runUpdateCheck();
+            CompletableFuture.runAsync(ServerHudSync::runUpdateCheck);
+            return;
         }
 
         if (!UPDATE_AVAILABLE) return;
