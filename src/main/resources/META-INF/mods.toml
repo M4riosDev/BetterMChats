@@ -3,7 +3,7 @@ loaderVersion="[40,)"
 license="All Rights Reserved"
 
 [[mods]]
-modId="m4r1os"
+modId="bettermchats"
 version="1.1.5"
 displayName="FiveM-style HUD & Chat"
 logoFile="logo.png"
@@ -18,14 +18,14 @@ Features:
 - Clean, configurable dispatch-style messages
 '''
 
-[[dependencies.m4r1os]]
+[[dependencies.bettermchats]]
 modId="forge"
 mandatory=true
 versionRange="[40,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.m4r1os]]
+[[dependencies.bettermchats]]
 modId="minecraft"
 mandatory=true
 versionRange="[1.18)"
