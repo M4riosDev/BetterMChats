@@ -1,10 +1,10 @@
-package com.m4r1os.BetterMChats.commands;
+package com.bettermchats.BetterMChats.commands;
 
-import com.m4r1os.BetterMChats.network.ChannelMsgPacket;
-import com.m4r1os.BetterMChats.network.ClearChatPacket;
-import com.m4r1os.BetterMChats.network.MeAboveHeadPacket;
-import com.m4r1os.BetterMChats.network.ModNetwork;
-import com.m4r1os.BetterMChats.util.RateLimiter;
+import com.bettermchats.BetterMChats.network.ChannelMsgPacket;
+import com.bettermchats.BetterMChats.network.ClearChatPacket;
+import com.bettermchats.BetterMChats.network.MeAboveHeadPacket;
+import com.bettermchats.BetterMChats.network.ModNetwork;
+import com.bettermchats.BetterMChats.util.RateLimiter;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
@@ -81,7 +81,7 @@ public class ModCommands {
                             // P1 FIX: Explicit length guard before packet serialization.
                             if (action.length() > MeAboveHeadPacket.MAX_TEXT_LENGTH) {
                                 ctx.getSource().sendSuccess(
-                                    Component.literal("[m4r1os] Action message too long (max " + MeAboveHeadPacket.MAX_TEXT_LENGTH + " characters)."), false);
+                                    Component.literal("[BetterMChats] Action message too long (max " + MeAboveHeadPacket.MAX_TEXT_LENGTH + " characters)."), false);
                                 return 0;
                             }
 
@@ -90,7 +90,7 @@ public class ModCommands {
                                 long remaining = RATE_LIMITER.getRemainingCooldown(player.getUUID(), "me", ME_COOLDOWN_MS);
                                 int seconds = (int) Math.ceil(remaining / 1000.0);
                                 ctx.getSource().sendSuccess(
-                                    Component.literal("[m4r1os] You must wait " + seconds + " second(s) before sending another /me message."), false);
+                                    Component.literal("[BetterMChats] You must wait " + seconds + " second(s) before sending another /me message."), false);
                                 return 0;
                             }
 
@@ -109,7 +109,7 @@ public class ModCommands {
                         .executes(ctx -> {
                             sendToAll(ctx.getSource().getServer(),
                                     StringArgumentType.getString(ctx, "raw"));
-                                ctx.getSource().sendSuccess(Component.literal("[m4r1os] sent HUD raw."), false);
+                                ctx.getSource().sendSuccess(Component.literal("[BetterMChats] sent HUD raw."), false);
                             return 1;
                         })));
 
@@ -120,7 +120,7 @@ public class ModCommands {
                                 .executes(ctx -> {
                                     int cleared = clearChatsAll(ctx.getSource().getServer());
                                     ctx.getSource().sendSuccess(
-                                        Component.literal("[m4r1os] cleared chats for all players (" + cleared + ")."),
+                                        Component.literal("[BetterMChats] cleared chats for all players (" + cleared + ")."),
                                         false);
                                     return 1;
                                 }))
@@ -178,7 +178,7 @@ public class ModCommands {
                                 long remaining = RATE_LIMITER.getRemainingCooldown(player.getUUID(), cmd, cooldown);
                                 int seconds = (int) Math.ceil(remaining / 1000.0);
                                 ctx.getSource().sendSuccess(
-                                    Component.literal("[m4r1os] You must wait " + seconds + " second(s) before sending another /" + cmd + " message."),
+                                    Component.literal("[BetterMChats] You must wait " + seconds + " second(s) before sending another /" + cmd + " message."),
                                     false);
                                 return 0;
                             }
@@ -203,7 +203,7 @@ public class ModCommands {
                                 sendToAll(server, raw);
                             }
 
-                            ctx.getSource().sendSuccess(Component.literal("[m4r1os] sent /" + cmd + "."), false);
+                            ctx.getSource().sendSuccess(Component.literal("[BetterMChats] sent /" + cmd + "."), false);
 
                             return 1;
                         })));
@@ -268,16 +268,16 @@ public class ModCommands {
     private static int runClearByRole(CommandSourceStack source, String role) {
         int cleared = clearChatsByRole(source.getServer(), role);
         if (cleared == -2) {
-            source.sendFailure(Component.literal("[m4r1os] invalid role. Use: admin, staff, user."));
+            source.sendFailure(Component.literal("[BetterMChats] invalid role. Use: admin, staff, user."));
             return 0;
         }
         if (cleared == 0) {
-            source.sendFailure(Component.literal("[m4r1os] no players found with role '" + role + "'."));
+            source.sendFailure(Component.literal("[BetterMChats] no players found with role '" + role + "'."));
             return 0;
         }
 
         source.sendSuccess(
-            Component.literal("[m4r1os] cleared chats for role '" + role + "' (" + cleared + ")."),
+            Component.literal("[BetterMChats] cleared chats for role '" + role + "' (" + cleared + ")."),
                 false);
         return 1;
     }
@@ -285,12 +285,12 @@ public class ModCommands {
     private static int runClearByUsername(CommandSourceStack source, String username) {
         int cleared = clearChatsByUsername(source.getServer(), username);
         if (cleared < 0) {
-            source.sendFailure(Component.literal("[m4r1os] player not found: " + username));
+            source.sendFailure(Component.literal("[BetterMChats] player not found: " + username));
             return 0;
         }
 
         source.sendSuccess(
-            Component.literal("[m4r1os] cleared chats for player '" + username + "' (" + cleared + ")."),
+            Component.literal("[BetterMChats] cleared chats for player '" + username + "' (" + cleared + ")."),
                 false);
         return 1;
     }

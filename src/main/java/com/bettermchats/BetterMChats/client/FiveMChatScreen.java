@@ -1,4 +1,4 @@
-package com.m4r1os.BetterMChats.client;
+package com.bettermchats.BetterMChats.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

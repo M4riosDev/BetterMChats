@@ -1,6 +1,6 @@
-package com.m4r1os.BetterMChats.network;
+package com.bettermchats.BetterMChats.network;
 
-import com.m4r1os.BetterMChats.FiveMHudMod;
+import com.bettermchats.BetterMChats.FiveMHudMod;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -28,7 +28,7 @@ public class ChannelMsgPacket {
         c.enqueueWork(() -> {
             try {
                 FiveMHudMod.LOGGER.debug("[FiveMHud] ChannelMsgPacket received: {}", msg.raw);
-                Class<?> cls = Class.forName("com.m4r1os.BetterMChats.client.HudOverlay");
+                Class<?> cls = Class.forName("com.bettermchats.BetterMChats.client.HudOverlay");
                 Method m = cls.getDeclaredMethod("addRawMessage", String.class);
                 m.invoke(null, msg.raw);
             } catch (Throwable t) {
