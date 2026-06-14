@@ -1,6 +1,6 @@
-package com.m4r1os.BetterMChats.client;
+package com.bettermchats.BetterMChats.client;
 
-import com.m4r1os.BetterMChats.FiveMHudMod;
+import com.bettermchats.BetterMChats.FiveMHudMod;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;

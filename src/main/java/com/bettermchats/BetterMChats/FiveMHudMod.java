@@ -1,8 +1,8 @@
-package com.m4r1os.BetterMChats;
+package com.bettermchats.BetterMChats;
 
-import com.m4r1os.BetterMChats.commands.ModCommands;
-import com.m4r1os.BetterMChats.config.ServerHudConfig;
-import com.m4r1os.BetterMChats.network.ModNetwork;
+import com.bettermchats.BetterMChats.commands.ModCommands;
+import com.bettermchats.BetterMChats.config.ServerHudConfig;
+import com.bettermchats.BetterMChats.network.ModNetwork;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.minecraftforge.common.MinecraftForge;
@@ -16,7 +16,7 @@ import net.minecraftforge.fml.config.ModConfig;
 public class FiveMHudMod {
     public static final Logger LOGGER = LogManager.getLogger("FiveMHud");
 
-    public static final String MODID = "m4r1os";
+    public static final String MODID = "bettermchats";
 
     public FiveMHudMod() {
         LOGGER.info("[BetterMChats] Opened");

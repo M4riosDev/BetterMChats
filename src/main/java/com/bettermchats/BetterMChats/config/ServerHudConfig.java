@@ -1,4 +1,4 @@
-package com.m4r1os.BetterMChats.config;
+package com.bettermchats.BetterMChats.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 

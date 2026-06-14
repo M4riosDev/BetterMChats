@@ -1,6 +1,6 @@
-package com.m4r1os.BetterMChats.network;
+package com.bettermchats.BetterMChats.network;
 
-import com.m4r1os.BetterMChats.FiveMHudMod;
+import com.bettermchats.BetterMChats.FiveMHudMod;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fmllegacy.network.NetworkRegistry;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;

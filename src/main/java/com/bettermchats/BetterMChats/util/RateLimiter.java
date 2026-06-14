@@ -1,4 +1,4 @@
-package com.m4r1os.BetterMChats.util;
+package com.bettermchats.BetterMChats.util;
 
 import java.util.HashMap;
 import java.util.Map;
