@@ -1,4 +1,4 @@
-package com.m4r1os.BetterMChats.client;
+package com.bettermchats.BetterMChats.client;
 
 public class ClientHudState {
 
