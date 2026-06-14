@@ -4,7 +4,7 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="m4r1os"
-version="1.1.4"
+version="1.1.5"
 displayName="FiveM-style HUD & Chat"
 logoFile="logo.png"
 authors="m4r1os, MNV, Saralis Dev"
