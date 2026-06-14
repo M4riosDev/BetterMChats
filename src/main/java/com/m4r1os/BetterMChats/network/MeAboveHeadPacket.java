@@ -9,6 +9,9 @@ import java.util.function.Supplier;
 
 
 public class MeAboveHeadPacket {
+    /** P1 FIX: Single source of truth for the max /me text length. */
+    public static final int MAX_TEXT_LENGTH = 256;
+
     private final UUID playerId;
     private final String text;
     private final int durationTicks;
@@ -21,13 +24,13 @@ public class MeAboveHeadPacket {
 
     public static void encode(MeAboveHeadPacket msg, FriendlyByteBuf buf) {
         buf.writeUUID(msg.playerId);
-        buf.writeUtf(msg.text, 256);
+        buf.writeUtf(msg.text, MAX_TEXT_LENGTH);
         buf.writeVarInt(msg.durationTicks);
     }
 
     public static MeAboveHeadPacket decode(FriendlyByteBuf buf) {
         UUID id = buf.readUUID();
-        String text = buf.readUtf(256);
+        String text = buf.readUtf(MAX_TEXT_LENGTH);
         int dur = buf.readVarInt();
         return new MeAboveHeadPacket(id, text, dur);
     }
