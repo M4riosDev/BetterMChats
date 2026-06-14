@@ -26,7 +26,9 @@ public class ModCommands {
 
     private static final List<String> REGISTERED_GROUPS = new ArrayList<>();
     private static final RateLimiter RATE_LIMITER = new RateLimiter();
-    
+
+    private static final long ME_COOLDOWN_MS = 3000L;
+
     private static final Map<String, Long> CHANNEL_COOLDOWNS = new HashMap<>();
     
     static {
@@ -72,6 +74,24 @@ public class ModCommands {
                             if (action == null) action = "";
                             action = action.trim();
                             if (action.isEmpty()) return 0;
+
+                            if (action.length() > MeAboveHeadPacket.MAX_TEXT_LENGTH) {
+                                ctx.getSource().sendFeedback(
+                                    new StringTextComponent("[m4r1os] Action message too long (max "
+                                        + MeAboveHeadPacket.MAX_TEXT_LENGTH + " characters)."),
+                                    false);
+                                return 0;
+                            }
+
+                            if (!RATE_LIMITER.canMessage(player.getUniqueID(), "me", ME_COOLDOWN_MS)) {
+                                long remaining = RATE_LIMITER.getRemainingCooldown(player.getUniqueID(), "me", ME_COOLDOWN_MS);
+                                int seconds = (int) Math.ceil(remaining / 1000.0);
+                                ctx.getSource().sendFeedback(
+                                    new StringTextComponent("[m4r1os] You must wait " + seconds
+                                        + " second(s) before sending another /me message."),
+                                    false);
+                                return 0;
+                            }
 
                             int durationTicks = 100;
                             ModNetwork.CHANNEL.send(

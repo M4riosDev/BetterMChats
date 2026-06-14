@@ -9,6 +9,8 @@ import java.util.function.Supplier;
 
 
 public class MeAboveHeadPacket {
+    public static final int MAX_TEXT_LENGTH = 256;
+
     private final UUID playerId;
     private final String text;
     private final int durationTicks;
@@ -21,13 +23,13 @@ public class MeAboveHeadPacket {
 
     public static void encode(MeAboveHeadPacket msg, PacketBuffer buf) {
         buf.writeUniqueId(msg.playerId);
-        buf.writeString(msg.text, 256);
+        buf.writeString(msg.text, MAX_TEXT_LENGTH);
         buf.writeVarInt(msg.durationTicks);
     }
 
     public static MeAboveHeadPacket decode(PacketBuffer buf) {
         UUID id = buf.readUniqueId();
-        String text = buf.readString(256);
+        String text = buf.readString(MAX_TEXT_LENGTH);
         int dur = buf.readVarInt();
         return new MeAboveHeadPacket(id, text, dur);
     }
