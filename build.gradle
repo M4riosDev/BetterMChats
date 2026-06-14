@@ -11,9 +11,9 @@
     apply plugin: 'eclipse'
     apply plugin: 'maven-publish'
   
-    version = '1.1.4'
+    version = '1.1.5'
     group = 'com.m4r1os.BetterMChats' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-    archivesBaseName = 'BetterMChats'
+    archivesBaseName = 'BetterMChats-1.16.5'
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(8)
     println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
