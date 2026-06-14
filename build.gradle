@@ -12,9 +12,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.1.4'
+version = '1.1.5'
 group = 'com.m4r1os.bettermchats'
-archivesBaseName = 'BetterMChats'
+archivesBaseName = 'BetterMChats-1.19.2'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
