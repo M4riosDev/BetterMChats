@@ -1,6 +1,6 @@
-package com.m4r1os.BetterMChats.network;
+package com.bettermchats.BetterMChats.network;
 
-import com.m4r1os.BetterMChats.util.DistProxy;
+import com.bettermchats.BetterMChats.util.DistProxy;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 

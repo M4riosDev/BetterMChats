@@ -1,6 +1,6 @@
-package com.m4r1os.BetterMChats.network;
+package com.bettermchats.BetterMChats.network;
 
-import com.m4r1os.BetterMChats.FiveMHudMod;
+import com.bettermchats.BetterMChats.FiveMHudMod;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -23,7 +23,7 @@ public class ClearChatPacket {
         NetworkEvent.Context c = ctx.get();
         c.enqueueWork(() -> {
             try {
-                Class<?> cls = Class.forName("com.m4r1os.BetterMChats.client.HudOverlay");
+                Class<?> cls = Class.forName("com.bettermchats.BetterMChats.client.HudOverlay");
                 Method m = cls.getDeclaredMethod("clearAllMessages");
                 m.invoke(null);
             } catch (Throwable t) {

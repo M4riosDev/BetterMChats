@@ -1,6 +1,6 @@
-package com.m4r1os.BetterMChats.client;
+package com.bettermchats.BetterMChats.client;
 
-import com.m4r1os.BetterMChats.FiveMHudMod;
+import com.bettermchats.BetterMChats.FiveMHudMod;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -186,7 +186,8 @@ public class HudOverlay extends AbstractGui {
                     Object id = m.invoke(typeObj);
                     if (id instanceof Byte) typeId = ((Byte) id) & 0xFF;
                     else if (id instanceof Integer) typeId = (Integer) id;
-                } catch (Throwable ignored) {
+                } catch (ReflectiveOperationException e) {
+                    FiveMHudMod.LOGGER.debug("[BetterMChats] Could not read chat type id via reflection", e);
                 }
             }
 

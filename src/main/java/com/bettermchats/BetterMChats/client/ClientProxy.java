@@ -1,6 +1,6 @@
-package com.m4r1os.BetterMChats.client;
+package com.bettermchats.BetterMChats.client;
 
-import com.m4r1os.BetterMChats.util.IDistClientProxy;
+import com.bettermchats.BetterMChats.util.IDistClientProxy;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

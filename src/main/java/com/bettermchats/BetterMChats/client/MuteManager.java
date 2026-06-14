@@ -1,8 +1,8 @@
-package com.m4r1os.BetterMChats.client;
+package com.bettermchats.BetterMChats.client;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.m4r1os.BetterMChats.FiveMHudMod;
+import com.bettermchats.BetterMChats.FiveMHudMod;
 import net.minecraft.client.Minecraft;
 
 import java.io.File;

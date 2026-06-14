@@ -12,7 +12,7 @@
     apply plugin: 'maven-publish'
   
     version = '1.1.5'
-    group = 'com.m4r1os.BetterMChats' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+    group = 'com.bettermchats.BetterMChats' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
     archivesBaseName = 'BetterMChats-1.16.5'
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(8)
@@ -27,7 +27,7 @@
                 property 'forge.logging.console.level', 'debug'
 
                 mods {
-                    m4r1os {
+                    bettermchats {
                         source sourceSets.main
                     }
                 }
@@ -42,7 +42,7 @@
                 property 'forge.logging.console.level', 'debug'
 
                 mods {
-                    m4r1os {
+                    bettermchats {
                         source sourceSets.main
                     }
                 }
@@ -53,10 +53,10 @@
                 property 'forge.logging.markers', 'REGISTRIES'
                 property 'forge.logging.console.level', 'debug'
 
-                args '--mod', 'm4r1os', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+                args '--mod', 'bettermchats', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
                 mods {
-                    m4r1os {
+                    bettermchats {
                         source sourceSets.main
                     }
                 }
@@ -81,12 +81,12 @@
     jar {
         manifest {
             attributes([
-                "Specification-Title": "m4r1os",
-                "Specification-Vendor": "m4r1os",
+                "Specification-Title": "bettermchats",
+                "Specification-Vendor": "bettermchats",
                 "Specification-Version": "1",
                 "Implementation-Title": project.name,
                 "Implementation-Version": "${version}",
-                "Implementation-Vendor" :"m4r1os",
+                "Implementation-Vendor" :"bettermchats",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
             ])
         }

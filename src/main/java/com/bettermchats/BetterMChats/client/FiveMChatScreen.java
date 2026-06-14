@@ -1,5 +1,6 @@
-package com.m4r1os.BetterMChats.client;
+package com.bettermchats.BetterMChats.client;
 
+import com.bettermchats.BetterMChats.FiveMHudMod;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -120,7 +121,8 @@ public class FiveMChatScreen extends ChatScreen {
             if (addToChat && mc.ingameGUI != null && mc.ingameGUI.getChatGUI() != null) {
                 mc.ingameGUI.getChatGUI().addToSentMessages(m);
             }
-        } catch (Throwable ignored) {
+        } catch (UnsupportedOperationException | NullPointerException e) {
+            FiveMHudMod.LOGGER.warn("[BetterMChats] Could not add message to chat history", e);
         }
     }
 

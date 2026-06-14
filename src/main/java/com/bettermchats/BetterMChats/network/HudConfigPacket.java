@@ -1,5 +1,6 @@
-package com.m4r1os.BetterMChats.network;
+package com.bettermchats.BetterMChats.network;
 
+import com.bettermchats.BetterMChats.FiveMHudMod;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -69,7 +70,7 @@ public class HudConfigPacket {
         NetworkEvent.Context c = ctx.get();
         c.enqueueWork(() -> {
             try {
-                Class<?> cls = Class.forName("com.m4r1os.BetterMChats.client.ClientHudState");
+                Class<?> cls = Class.forName("com.bettermchats.BetterMChats.client.ClientHudState");
                 Method m = cls.getDeclaredMethod(
                         "apply",
                         int.class, int.class, int.class, int.class, int.class, int.class,
@@ -79,7 +80,12 @@ public class HudConfigPacket {
                         msg.anchor, msg.offsetX, msg.offsetY, msg.width, msg.lineHeight, msg.gap,
                         msg.maxEntries, msg.lifeMs, msg.fadeMs, msg.showIcon, msg.iconSize
                 );
-            } catch (Throwable ignored) {
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
+                FiveMHudMod.LOGGER.error("[BetterMChats] HudConfigPacket: reflection setup failed", e);
+            } catch (java.lang.reflect.InvocationTargetException e) {
+                FiveMHudMod.LOGGER.error("[BetterMChats] HudConfigPacket: failed to apply HUD config", e.getCause());
+            } catch (IllegalAccessException e) {
+                FiveMHudMod.LOGGER.error("[BetterMChats] HudConfigPacket: illegal access applying HUD config", e);
             }
         });
         c.setPacketHandled(true);

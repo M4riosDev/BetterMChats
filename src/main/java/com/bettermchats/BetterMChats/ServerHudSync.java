@@ -1,8 +1,8 @@
-package com.m4r1os.BetterMChats;
+package com.bettermchats.BetterMChats;
 
-import com.m4r1os.BetterMChats.config.ServerHudConfig;
-import com.m4r1os.BetterMChats.network.HudConfigPacket;
-import com.m4r1os.BetterMChats.network.ModNetwork;
+import com.bettermchats.BetterMChats.config.ServerHudConfig;
+import com.bettermchats.BetterMChats.network.HudConfigPacket;
+import com.bettermchats.BetterMChats.network.ModNetwork;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;
