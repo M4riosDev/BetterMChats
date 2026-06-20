@@ -1,12 +1,11 @@
 package com.bettermchats.BetterMChats.network;
 
 import com.bettermchats.BetterMChats.FiveMHudMod;
+import com.bettermchats.BetterMChats.client.ClientHudState;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.lang.reflect.Method;
 import java.util.function.Supplier;
-
 
 public class HudConfigPacket {
     public final int anchor;
@@ -23,17 +22,17 @@ public class HudConfigPacket {
 
     public HudConfigPacket(int anchor, int offsetX, int offsetY, int width, int lineHeight, int gap,
                            int maxEntries, int lifeMs, int fadeMs, boolean showIcon, int iconSize) {
-        this.anchor = anchor;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-        this.width = width;
+        this.anchor     = anchor;
+        this.offsetX    = offsetX;
+        this.offsetY    = offsetY;
+        this.width      = width;
         this.lineHeight = lineHeight;
-        this.gap = gap;
+        this.gap        = gap;
         this.maxEntries = maxEntries;
-        this.lifeMs = lifeMs;
-        this.fadeMs = fadeMs;
-        this.showIcon = showIcon;
-        this.iconSize = iconSize;
+        this.lifeMs     = lifeMs;
+        this.fadeMs     = fadeMs;
+        this.showIcon   = showIcon;
+        this.iconSize   = iconSize;
     }
 
     public static void encode(HudConfigPacket msg, PacketBuffer buf) {
@@ -69,24 +68,11 @@ public class HudConfigPacket {
     public static void handle(HudConfigPacket msg, Supplier<NetworkEvent.Context> ctx) {
         NetworkEvent.Context c = ctx.get();
         c.enqueueWork(() -> {
-            try {
-                Class<?> cls = Class.forName("com.bettermchats.BetterMChats.client.ClientHudState");
-                Method m = cls.getDeclaredMethod(
-                        "apply",
-                        int.class, int.class, int.class, int.class, int.class, int.class,
-                        int.class, int.class, int.class, boolean.class, int.class
-                );
-                m.invoke(null,
-                        msg.anchor, msg.offsetX, msg.offsetY, msg.width, msg.lineHeight, msg.gap,
-                        msg.maxEntries, msg.lifeMs, msg.fadeMs, msg.showIcon, msg.iconSize
-                );
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                FiveMHudMod.LOGGER.error("[BetterMChats] HudConfigPacket: reflection setup failed", e);
-            } catch (java.lang.reflect.InvocationTargetException e) {
-                FiveMHudMod.LOGGER.error("[BetterMChats] HudConfigPacket: failed to apply HUD config", e.getCause());
-            } catch (IllegalAccessException e) {
-                FiveMHudMod.LOGGER.error("[BetterMChats] HudConfigPacket: illegal access applying HUD config", e);
-            }
+            FiveMHudMod.LOGGER.debug("[FiveMHud] HudConfigPacket received");
+            ClientHudState.apply(
+                    msg.anchor, msg.offsetX, msg.offsetY, msg.width, msg.lineHeight, msg.gap,
+                    msg.maxEntries, msg.lifeMs, msg.fadeMs, msg.showIcon, msg.iconSize
+            );
         });
         c.setPacketHandled(true);
     }

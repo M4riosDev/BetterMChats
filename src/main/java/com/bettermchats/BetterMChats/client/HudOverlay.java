@@ -15,13 +15,14 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.lang.reflect.Method;
+
 @EventBusSubscriber(modid = FiveMHudMod.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.FORGE)
 public class HudOverlay extends AbstractGui {
-
 
     static final List<Entry> ENTRIES = new ArrayList<>();
     static final List<Entry> HISTORY = new ArrayList<>();
@@ -36,18 +37,15 @@ public class HudOverlay extends AbstractGui {
     public static void addRawMessage(String raw) {
         Markup.Parsed parsed = Markup.parse(raw);
         FiveMHudMod.LOGGER.debug("[FiveMHud] addRawMessage raw={} parsed{boxed={},bg=#{},label={},emoji={},text={}}",
-                raw,
-                parsed.boxed,
+                raw, parsed.boxed,
                 Integer.toHexString(parsed.bgColor & 0xFFFFFF),
-                parsed.label,
-                parsed.emojiKey,
-                parsed.text);
-        
+                parsed.label, parsed.emojiKey, parsed.text);
+
         if (MuteManager.isChannelMuted(parsed.label)) {
             FiveMHudMod.LOGGER.debug("[FiveMHud] Message from muted channel '{}' - ignoring", parsed.label);
             return;
         }
-        
+
         long now = System.currentTimeMillis();
         ENTRIES.add(0, new Entry(parsed, now));
         while (ENTRIES.size() > ClientHudState.maxEntries) ENTRIES.remove(ENTRIES.size() - 1);
@@ -55,6 +53,8 @@ public class HudOverlay extends AbstractGui {
         HISTORY.add(new Entry(parsed, now));
         while (HISTORY.size() > maxHistoryEntries) HISTORY.remove(0);
     }
+
+    // ── Suppress vanilla chat overlay ─────────────────────────────────────────
 
     @SubscribeEvent
     public static void onChatRender(RenderGameOverlayEvent.Chat e) {
@@ -68,6 +68,8 @@ public class HudOverlay extends AbstractGui {
         }
     }
 
+    // ── Draw our custom HUD ───────────────────────────────────────────────────
+
     @SubscribeEvent
     public static void onRender(RenderGameOverlayEvent.Post e) {
         if (e.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
@@ -76,37 +78,36 @@ public class HudOverlay extends AbstractGui {
         if (mc.player == null || mc.gameSettings.hideGUI) return;
         if (mc.currentScreen instanceof FiveMChatScreen) return;
 
-        MatrixStack ms = e.getMatrixStack();
+        MatrixStack ms   = e.getMatrixStack();
         FontRenderer font = mc.fontRenderer;
 
         int screenW = mc.getMainWindow().getScaledWidth();
         int screenH = mc.getMainWindow().getScaledHeight();
 
-        int width = Math.min(Math.min(ClientHudState.width, 260), screenW - 16);
-
+        int width    = Math.min(Math.min(ClientHudState.width, 260), screenW - 16);
         int baseLineH = ClientHudState.lineHeight;
-        int offX = ClientHudState.offsetX;
-        int offY = ClientHudState.offsetY;
+        int offX     = ClientHudState.offsetX;
+        int offY     = ClientHudState.offsetY;
 
-        boolean chatOpen = (mc.currentScreen instanceof ChatScreen) || (mc.currentScreen instanceof FiveMChatScreen);
+        boolean chatOpen = (mc.currentScreen instanceof ChatScreen)
+                        || (mc.currentScreen instanceof FiveMChatScreen);
 
         int x;
         int yStart;
         boolean growDown;
 
         if (chatOpen) {
-            x = offX;
-            yStart = screenH - 48 - offY;
-            growDown = false;
+            x         = offX;
+            yStart    = screenH - 48 - offY;
+            growDown  = false;
         } else {
-            x = offX;
-            yStart = offY;
-            growDown = true;
+            x         = offX;
+            yStart    = offY;
+            growDown  = true;
         }
 
         long now = System.currentTimeMillis();
         Iterator<Entry> it = ENTRIES.iterator();
-
         int cursorY = yStart;
 
         while (it.hasNext()) {
@@ -137,24 +138,24 @@ public class HudOverlay extends AbstractGui {
                 if (cursorY > screenH - 24) break;
             } else {
                 Measure mm = measure(font, slideX, width, baseLineH, en.parsed);
-                int measuredH = mm.height;
-                int measuredGap = mm.gap;
-
-                int y = cursorY - measuredH;
+                int y = cursorY - mm.height;
                 drawOne(ms, mc, font, slideX, y, width, baseLineH, en.parsed, alpha);
-                cursorY = y - measuredGap;
-
+                cursorY = y - mm.gap;
                 if (cursorY < 8) break;
             }
         }
     }
 
+    // ── Replace vanilla ChatScreen with FiveMChatScreen ──────────────────────
+
     @SubscribeEvent
     public static void onGuiOpen(GuiOpenEvent e) {
-        if (e.getGui() instanceof ChatScreen) {
+        if (e.getGui() instanceof ChatScreen && !(e.getGui() instanceof FiveMChatScreen)) {
             e.setGui(new FiveMChatScreen());
         }
     }
+
+    // ── Intercept system/game messages ────────────────────────────────────────
 
     @SubscribeEvent
     public static void onClientChat(ClientChatReceivedEvent e) {
@@ -167,6 +168,7 @@ public class HudOverlay extends AbstractGui {
 
             String lower = plain.toLowerCase();
 
+            // Filter command echo spam
             if (lower.contains(" issued server command")
                     || lower.contains("issued server command")
                     || lower.contains(" sent /")
@@ -184,10 +186,10 @@ public class HudOverlay extends AbstractGui {
                 try {
                     Method m = typeObj.getClass().getMethod("getId");
                     Object id = m.invoke(typeObj);
-                    if (id instanceof Byte) typeId = ((Byte) id) & 0xFF;
+                    if (id instanceof Byte)    typeId = ((Byte) id) & 0xFF;
                     else if (id instanceof Integer) typeId = (Integer) id;
-                } catch (ReflectiveOperationException e) {
-                    FiveMHudMod.LOGGER.debug("[BetterMChats] Could not read chat type id via reflection", e);
+                } catch (ReflectiveOperationException ex) {
+                    FiveMHudMod.LOGGER.debug("[BetterMChats] Could not read chat type id", ex);
                 }
             }
 
@@ -196,7 +198,7 @@ public class HudOverlay extends AbstractGui {
 
             if (isSystem) {
                 String raw = "[emoji=system][label=SYSTEM][box][color=#F1C40F] " + plain;
-                FiveMHudMod.LOGGER.debug("[FiveMHud] SYSTEM intercept typeId={} typeObj={} msg={}", typeId, typeObj, plain);
+                FiveMHudMod.LOGGER.debug("[FiveMHud] SYSTEM intercept typeId={} msg={}", typeId, plain);
                 addRawMessage(raw);
                 e.setCanceled(true);
             }
@@ -205,6 +207,8 @@ public class HudOverlay extends AbstractGui {
             FiveMHudMod.LOGGER.warn("[FiveMHud] onClientChat error", t);
         }
     }
+
+    // ── Layout helpers ────────────────────────────────────────────────────────
 
     static class Measure {
         final List<String> lines;
@@ -221,24 +225,23 @@ public class HudOverlay extends AbstractGui {
     }
 
     static Measure measure(FontRenderer font, int x, int w, int baseLineH, Markup.Parsed p) {
-        int pad = 6;
-        int lineH = Math.max(9, baseLineH);
-
+        int pad    = 6;
+        int lineH  = Math.max(9, baseLineH);
         int cursorX = x + pad;
 
         int iconPad = 0;
-        if (ClientHudState.showIcon && p.emojiKey != null && !p.emojiKey.isEmpty() && EmojiRegistry.get(p.emojiKey) != null) {
+        if (ClientHudState.showIcon && p.emojiKey != null && !p.emojiKey.isEmpty()
+                && EmojiRegistry.get(p.emojiKey) != null) {
             iconPad = ClientHudState.iconSize + 6;
         }
         cursorX += iconPad;
 
-        String full = buildDisplayText(p);
-        int maxTextW = Math.max(10, w - (pad + iconPad) - pad);
-
+        String full   = buildDisplayText(p);
+        int maxTextW  = Math.max(10, w - (pad + iconPad) - pad);
         List<String> lines = wrapLines(font, full, maxTextW);
 
         int height = Math.max(18, pad + (lines.size() * lineH) + pad);
-        int gap = (lines.size() > 1) ? 8 : 4;
+        int gap    = (lines.size() > 1) ? 8 : 4;
 
         return new Measure(lines, height, gap, cursorX);
     }
@@ -250,26 +253,16 @@ public class HudOverlay extends AbstractGui {
 
         String[] paras = text.split("\n");
         for (String para : paras) {
-            String s = para;
-            if (s.isEmpty()) {
-                out.add("");
-                continue;
-            }
+            if (para.isEmpty()) { out.add(""); continue; }
 
-            String[] words = s.split(" ");
+            String[] words = para.split(" ");
             StringBuilder line = new StringBuilder();
 
             for (String word : words) {
                 if (word.isEmpty()) continue;
-
                 if (line.length() == 0) {
-
-                    if (font.getStringWidth(word) <= maxWidth) {
-                        line.append(word);
-                    } else {
-
-                        hardBreakWord(font, out, word, maxWidth);
-                    }
+                    if (font.getStringWidth(word) <= maxWidth) line.append(word);   // 1.16.5: getStringWidth
+                    else hardBreakWord(font, out, word, maxWidth);
                 } else {
                     String candidate = line + " " + word;
                     if (font.getStringWidth(candidate) <= maxWidth) {
@@ -277,16 +270,11 @@ public class HudOverlay extends AbstractGui {
                     } else {
                         out.add(line.toString());
                         line.setLength(0);
-
-                        if (font.getStringWidth(word) <= maxWidth) {
-                            line.append(word);
-                        } else {
-                            hardBreakWord(font, out, word, maxWidth);
-                        }
+                        if (font.getStringWidth(word) <= maxWidth) line.append(word);
+                        else hardBreakWord(font, out, word, maxWidth);
                     }
                 }
             }
-
             if (line.length() > 0) out.add(line.toString());
         }
 
@@ -297,15 +285,13 @@ public class HudOverlay extends AbstractGui {
     private static void hardBreakWord(FontRenderer font, List<String> out, String word, int maxWidth) {
         StringBuilder chunk = new StringBuilder();
         for (int i = 0; i < word.length(); i++) {
-            char c = word.charAt(i);
-            chunk.append(c);
+            char ch = word.charAt(i);
+            chunk.append(ch);
             if (font.getStringWidth(chunk.toString()) > maxWidth) {
-
                 if (chunk.length() > 1) {
                     out.add(chunk.substring(0, chunk.length() - 1));
-                    chunk = new StringBuilder().append(c);
+                    chunk = new StringBuilder().append(ch);
                 } else {
-
                     out.add(chunk.toString());
                     chunk.setLength(0);
                 }
@@ -316,14 +302,13 @@ public class HudOverlay extends AbstractGui {
 
     private static String buildDisplayText(Markup.Parsed p) {
         String label = (p.label == null) ? "" : p.label.trim();
-        String msg = (p.text == null) ? "" : p.text;
+        String msg   = (p.text  == null) ? "" : p.text;
 
         if (!label.isEmpty()) {
             String upper = label.toUpperCase();
             if (upper.equals("TWITTER") || upper.equals("OOC")) {
                 String u = "";
                 String m = msg;
-
                 int bar = m.indexOf('|');
                 if (bar > 0 && bar < 40) {
                     u = m.substring(0, bar).trim();
@@ -332,36 +317,26 @@ public class HudOverlay extends AbstractGui {
                     int colon = m.indexOf(':');
                     if (colon > 0 && colon < 40) {
                         String left = m.substring(0, colon).trim();
-                        if (!left.contains(" ")) {
-                            u = left;
-                            m = m.substring(colon + 1).trim();
-                        }
+                        if (!left.contains(" ")) { u = left; m = m.substring(colon + 1).trim(); }
                     } else if (m.startsWith("@")) {
                         int sp = m.indexOf(' ');
-                        if (sp > 1 && sp < 40) {
-                            u = m.substring(1, sp).trim();
-                            m = m.substring(sp + 1).trim();
-                        }
+                        if (sp > 1 && sp < 40) { u = m.substring(1, sp).trim(); m = m.substring(sp + 1).trim(); }
                     }
                 }
-
                 if (!u.isEmpty()) {
-                    if (upper.equals("TWITTER")) return "TWITTER | " + u + " | " + m;
-                    return "OOC | " + u + " | " + m;
+                    return upper.equals("TWITTER") ? "TWITTER | " + u + " | " + m : "OOC | " + u + " | " + m;
                 }
-
                 return label + ": " + msg;
             }
         }
-
         return (!label.isEmpty()) ? (label + ": " + msg) : msg;
     }
 
+    // ── Renderer ──────────────────────────────────────────────────────────────
+
     static int drawOne(MatrixStack ms, Minecraft mc, FontRenderer font,
-                               int x, int y, int w, int baseLineH, Markup.Parsed p, float alpha) {
-
+                       int x, int y, int w, int baseLineH, Markup.Parsed p, float alpha) {
         int pad = 6;
-
         Measure m = measure(font, x, w, baseLineH, p);
 
         int a = (int) (alpha * 160);
@@ -374,9 +349,6 @@ public class HudOverlay extends AbstractGui {
 
         if (ClientHudState.showIcon && p.emojiKey != null && !p.emojiKey.isEmpty()) {
             ResourceLocation rl = EmojiRegistry.get(p.emojiKey);
-            if (rl == null) {
-                FiveMHudMod.LOGGER.warn("[FiveMHud] Missing icon mapping for emojiKey={}", p.emojiKey);
-            }
             if (rl != null) {
                 mc.getTextureManager().bindTexture(rl);
                 RenderSystem.enableBlend();
@@ -384,16 +356,14 @@ public class HudOverlay extends AbstractGui {
                 RenderSystem.disableDepthTest();
                 RenderSystem.color4f(1f, 1f, 1f, alpha);
 
-                int s = ClientHudState.iconSize;
-                int iconY = y + Math.round((m.height - s) / 2.0f);                
-                
+                int s     = ClientHudState.iconSize;
+                int iconY = y + Math.round((m.height - s) / 2.0f);
                 blit(ms, cursorX, iconY, 0, 0, s, s, 14, 14);
             }
         }
 
         int msgColor = (((int) (alpha * 255)) << 24) | 0xFFFFFF;
-
-        int ty = y + pad;
+        int ty   = y + pad;
         int lineH = Math.max(9, baseLineH);
         for (String ln : m.lines) {
             font.drawStringWithShadow(ms, ln, m.textX, ty, msgColor);
@@ -403,10 +373,11 @@ public class HudOverlay extends AbstractGui {
         return m.height + m.gap;
     }
 
+    // ── Data class ────────────────────────────────────────────────────────────
+
     static class Entry {
         final Markup.Parsed parsed;
         final long createdAt;
-
         Entry(Markup.Parsed parsed, long createdAt) {
             this.parsed = parsed;
             this.createdAt = createdAt;

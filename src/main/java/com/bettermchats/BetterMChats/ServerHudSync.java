@@ -1,18 +1,45 @@
 package com.bettermchats.BetterMChats;
 
 import com.bettermchats.BetterMChats.config.ServerHudConfig;
+import com.bettermchats.BetterMChats.network.ChannelMsgPacket;
 import com.bettermchats.BetterMChats.network.HudConfigPacket;
 import com.bettermchats.BetterMChats.network.ModNetwork;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Mod.EventBusSubscriber(modid = FiveMHudMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ServerHudSync {
+
+    private static final boolean ADMIN_UPDATE_NOTICE_ENABLED = true;
+    private static final String  CURSEFORGE_FILES_URL =
+            "https://www.curseforge.com/minecraft/mc-mods/roleplay-chats/files/all?page=1&pageSize=20&showAlphaFiles=hide";
+    private static final String  CURSEFORGE_FILE_URL_PREFIX =
+            "https://www.curseforge.com/minecraft/mc-mods/roleplay-chats/files/";
+    private static final int     HTTP_TIMEOUT_MS = 5000;
+
+    private static final Map<UUID, String> LAST_NOTIFIED_VERSION = new HashMap<>();
+
+    private static volatile boolean UPDATE_CHECK_DONE      = false;
+    private static volatile boolean UPDATE_AVAILABLE       = false;
+    private static volatile String  CURRENT_VERSION        = "unknown";
+    private static volatile String  RESOLVED_LATEST_VERSION = "";
+    private static volatile String  RESOLVED_DOWNLOAD_URL  = "";
 
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e) {
@@ -37,5 +64,137 @@ public class ServerHudSync {
         );
 
         ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> sp), pkt);
+        sendAdminUpdateNotice(sp);
+    }
+
+    private static void sendAdminUpdateNotice(ServerPlayerEntity player) {
+        if (!player.hasPermissionLevel(3)) return;
+        if (!ADMIN_UPDATE_NOTICE_ENABLED) return;
+
+        if (!UPDATE_CHECK_DONE) {
+            CompletableFuture.runAsync(ServerHudSync::runUpdateCheck);
+            return;
+        }
+        if (!UPDATE_AVAILABLE) return;
+
+        UUID   playerId      = player.getUniqueID();
+        String lastNotified  = LAST_NOTIFIED_VERSION.get(playerId);
+        String latestVersion = RESOLVED_LATEST_VERSION;
+        if (latestVersion.equalsIgnoreCase(lastNotified)) return;
+
+        String downloadUrl = RESOLVED_DOWNLOAD_URL == null ? "" : RESOLVED_DOWNLOAD_URL.trim();
+
+        String line1 = "[emoji=system][label=SYSTEM][box][color=#FFF200] New update is ready to install.";
+        String line2 = "[emoji=system][label=SYSTEM][box][color=#FFF200] Current: " + CURRENT_VERSION
+                + " | Latest: " + latestVersion
+                + (downloadUrl.isEmpty() ? "" : " | Download: " + downloadUrl);
+
+        ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ChannelMsgPacket(line1));
+        ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ChannelMsgPacket(line2));
+        LAST_NOTIFIED_VERSION.put(playerId, latestVersion);
+    }
+
+    private static void runUpdateCheck() {
+        String currentVersion = ModList.get()
+                .getModContainerById(FiveMHudMod.MODID)
+                .map(c -> c.getModInfo().getVersion().toString())
+                .orElse("unknown");
+
+        UpdateInfo info = fetchLatestFromCurseForge();
+
+        CURRENT_VERSION         = currentVersion;
+        RESOLVED_LATEST_VERSION = info.latestVersion;
+        RESOLVED_DOWNLOAD_URL   = info.downloadUrl;
+        UPDATE_AVAILABLE        = !info.latestVersion.isEmpty()
+                               && isNewerVersion(info.latestVersion, currentVersion);
+        UPDATE_CHECK_DONE       = true;
+    }
+
+    private static UpdateInfo fetchLatestFromCurseForge() {
+        try {
+            String html = httpGet(CURSEFORGE_FILES_URL);
+            if (html.isEmpty()) return UpdateInfo.empty();
+            String fileId  = extractFirst(html, "\\/minecraft\\/mc-mods\\/roleplay-chats\\/files\\/(\\d+)");
+            String version = extractLatestVersion(html);
+            if (version.isEmpty()) return UpdateInfo.empty();
+            String url = fileId.isEmpty() ? "" : (CURSEFORGE_FILE_URL_PREFIX + fileId + "/download");
+            return new UpdateInfo(version, url);
+        } catch (Exception ex) {
+            FiveMHudMod.LOGGER.warn("[BetterMChats] Update check failed: {}", ex.getMessage());
+            return UpdateInfo.empty();
+        }
+    }
+
+    private static String extractLatestVersion(String html) {
+        String[] patterns = {
+            "\\\"displayName\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"",
+            "\\\"fileName\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"",
+            "Roleplay\\s*Chats[^0-9]*(\\d+\\.\\d+(?:\\.\\d+)*)"
+        };
+        for (String p : patterns) {
+            Matcher m = Pattern.compile(p).matcher(html);
+            while (m.find()) {
+                String v = extractVersionToken(m.group(1));
+                if (!v.isEmpty()) return v;
+            }
+        }
+        return "";
+    }
+
+    private static String extractVersionToken(String text) {
+        if (text == null) return "";
+        Matcher m = Pattern.compile("(\\d+\\.\\d+(?:\\.\\d+)*)").matcher(text);
+        return m.find() ? m.group(1) : "";
+    }
+
+    private static String extractFirst(String text, String regex) {
+        if (text == null) return "";
+        Matcher m = Pattern.compile(regex).matcher(text);
+        return m.find() ? m.group(1) : "";
+    }
+
+    private static String httpGet(String urlText) throws Exception {
+        HttpURLConnection conn = (HttpURLConnection) new URL(urlText).openConnection();
+        conn.setRequestMethod("GET");
+        conn.setConnectTimeout(HTTP_TIMEOUT_MS);
+        conn.setReadTimeout(HTTP_TIMEOUT_MS);
+        conn.setRequestProperty("User-Agent", "BetterMChats-UpdateChecker/1.0");
+        try (InputStream in = conn.getInputStream(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            byte[] buf = new byte[4096];
+            int read;
+            while ((read = in.read(buf)) != -1) out.write(buf, 0, read);
+            return out.toString("UTF-8");
+        }
+    }
+
+    private static final class UpdateInfo {
+        final String latestVersion;
+        final String downloadUrl;
+        UpdateInfo(String v, String u) {
+            this.latestVersion = v == null ? "" : v.trim();
+            this.downloadUrl   = u == null ? "" : u.trim();
+        }
+        static UpdateInfo empty() { return new UpdateInfo("", ""); }
+    }
+
+    private static boolean isNewerVersion(String latest, String current) {
+        if (latest == null || current == null) return false;
+        String[] lp = latest.split("\\.");
+        String[] cp = current.split("\\.");
+        int max = Math.max(lp.length, cp.length);
+        for (int i = 0; i < max; i++) {
+            int l = i < lp.length ? parseVersionPart(lp[i]) : 0;
+            int c = i < cp.length ? parseVersionPart(cp[i]) : 0;
+            if (l > c) return true;
+            if (l < c) return false;
+        }
+        return false;
+    }
+
+    private static int parseVersionPart(String part) {
+        if (part == null) return 0;
+        String digits = part.replaceAll("[^0-9]", "");
+        if (digits.isEmpty()) return 0;
+        try { return Integer.parseInt(digits); } catch (NumberFormatException ex) { return 0; }
     }
 }

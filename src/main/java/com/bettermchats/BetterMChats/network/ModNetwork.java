@@ -19,31 +19,17 @@ public class ModNetwork {
         );
 
         CHANNEL.registerMessage(nextId(), ChannelMsgPacket.class,
-                ChannelMsgPacket::encode,
-                ChannelMsgPacket::decode,
-                ChannelMsgPacket::handle
-        );
+                ChannelMsgPacket::encode, ChannelMsgPacket::decode, ChannelMsgPacket::handle);
 
         CHANNEL.registerMessage(nextId(), HudConfigPacket.class,
-                HudConfigPacket::encode,
-                HudConfigPacket::decode,
-                HudConfigPacket::handle
-        );
+                HudConfigPacket::encode, HudConfigPacket::decode, HudConfigPacket::handle);
 
         CHANNEL.registerMessage(nextId(), MeAboveHeadPacket.class,
-                MeAboveHeadPacket::encode,
-                MeAboveHeadPacket::decode,
-                MeAboveHeadPacket::handle
-        );
+                MeAboveHeadPacket::encode, MeAboveHeadPacket::decode, MeAboveHeadPacket::handle);
 
         CHANNEL.registerMessage(nextId(), ClearChatPacket.class,
-                ClearChatPacket::encode,
-                ClearChatPacket::decode,
-                ClearChatPacket::handle
-        );
+                ClearChatPacket::encode, ClearChatPacket::decode, ClearChatPacket::handle);
     }
 
-    private static int nextId() {
-        return id++;
-    }
+    private static int nextId() { return id++; }
 }

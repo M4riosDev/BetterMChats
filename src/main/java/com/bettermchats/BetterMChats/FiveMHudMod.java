@@ -1,5 +1,6 @@
 package com.bettermchats.BetterMChats;
 
+import com.bettermchats.BetterMChats.client.HudOverlay;
 import com.bettermchats.BetterMChats.commands.ModCommands;
 import com.bettermchats.BetterMChats.config.ServerHudConfig;
 import com.bettermchats.BetterMChats.network.ModNetwork;
@@ -15,16 +16,15 @@ import net.minecraftforge.fml.config.ModConfig;
 @Mod(FiveMHudMod.MODID)
 public class FiveMHudMod {
     public static final Logger LOGGER = LogManager.getLogger("FiveMHud");
-
     public static final String MODID = "bettermchats";
 
     public FiveMHudMod() {
         LOGGER.info("[BetterMChats] Opened");
-        LOGGER.info("[BetterMChats] Replacing vanilla ChatScreen with FiveMChatScreen");
 
         ModNetwork.init();
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerHudConfig.SPEC);
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(HudOverlay.class);
     }
 
     @SubscribeEvent

@@ -8,7 +8,6 @@ import net.minecraft.client.gui.screen.ChatScreen;
 
 import java.util.List;
 
-
 public class FiveMChatScreen extends ChatScreen {
 
     private int scrollEntries = 0;
@@ -33,26 +32,10 @@ public class FiveMChatScreen extends ChatScreen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == 266) {
-            scrollEntries += 10;
-            clampScroll();
-            return true;
-        }
-        if (keyCode == 267) {
-            scrollEntries -= 10;
-            clampScroll();
-            return true;
-        }
-        if (keyCode == 268) { 
-            scrollEntries = Integer.MAX_VALUE;
-            clampScroll();
-            return true;
-        }
-        if (keyCode == 269) {
-            scrollEntries = 0;
-            clampScroll();
-            return true;
-        }
+        if (keyCode == 266) { scrollEntries += 10; clampScroll(); return true; }
+        if (keyCode == 267) { scrollEntries -= 10; clampScroll(); return true; }
+        if (keyCode == 268) { scrollEntries = Integer.MAX_VALUE; clampScroll(); return true; }
+        if (keyCode == 269) { scrollEntries = 0; clampScroll(); return true; }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
@@ -73,21 +56,20 @@ public class FiveMChatScreen extends ChatScreen {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.player == null) return;
 
-        FontRenderer font = mc.fontRenderer;
-        int screenW = mc.getMainWindow().getScaledWidth();
+        FontRenderer font = mc.fontRenderer;                        // 1.16.5: mc.fontRenderer
+        int screenW = mc.getMainWindow().getScaledWidth();          // 1.16.5: getMainWindow()
         int screenH = mc.getMainWindow().getScaledHeight();
 
-        int width = Math.min(Math.min(ClientHudState.width, 260), screenW - 16);
+        int width    = Math.min(Math.min(ClientHudState.width, 260), screenW - 16);
         int baseLineH = ClientHudState.lineHeight;
-        int offX = ClientHudState.offsetX;
-        int offY = ClientHudState.offsetY;
+        int offX     = ClientHudState.offsetX;
+        int offY     = ClientHudState.offsetY;
 
-        int x = offX;
+        int x      = offX;
         int yStart = screenH - 48 - offY;
 
         List<HudOverlay.Entry> hist = HudOverlay.HISTORY;
         if (hist.isEmpty()) return;
-
 
         int idx = hist.size() - 1 - scrollEntries;
         if (idx < 0) idx = 0;
@@ -97,32 +79,29 @@ public class FiveMChatScreen extends ChatScreen {
             HudOverlay.Entry en = hist.get(i);
             HudOverlay.Measure mm = HudOverlay.measure(font, x, width, baseLineH, en.parsed);
             int y = cursorY - mm.height;
-
             HudOverlay.drawOne(ms, mc, font, x, y, width, baseLineH, en.parsed, 1.0f);
             cursorY = y - mm.gap;
-
             if (cursorY < 8) break;
         }
     }
 
-
     @Override
-    public void sendMessage(String message, boolean addToChat) {
+    public void sendMessage(String message, boolean addToChat) {   // 1.16.5: sendMessage(String, boolean)
         if (message == null) return;
         String m = message.trim();
         if (m.isEmpty()) return;
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
-            mc.player.sendChatMessage(m);
+            mc.player.sendChatMessage(m);                           // 1.16.5: sendChatMessage()
         }
 
         try {
             if (addToChat && mc.ingameGUI != null && mc.ingameGUI.getChatGUI() != null) {
-                mc.ingameGUI.getChatGUI().addToSentMessages(m);
+                mc.ingameGUI.getChatGUI().addToSentMessages(m);    // 1.16.5: ingameGUI.getChatGUI()
             }
-        } catch (UnsupportedOperationException | NullPointerException e) {
-            FiveMHudMod.LOGGER.warn("[BetterMChats] Could not add message to chat history", e);
+        } catch (UnsupportedOperationException | NullPointerException ex) {
+            FiveMHudMod.LOGGER.warn("[BetterMChats] Could not add to chat history", ex);
         }
     }
 

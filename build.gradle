@@ -1,109 +1,99 @@
-    buildscript {
-        repositories {
-            maven { url = 'https://maven.minecraftforge.net' }
-            mavenCentral()
-        }
-        dependencies {
-            classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        }
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
     }
-    apply plugin: 'net.minecraftforge.gradle'
-    apply plugin: 'eclipse'
-    apply plugin: 'maven-publish'
-  
-    version = '1.1.5'
-    group = 'com.bettermchats.BetterMChats' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-    archivesBaseName = 'BetterMChats-1.16.5'
-
-    java.toolchain.languageVersion = JavaLanguageVersion.of(8)
-    println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-    minecraft {
-        runs {
-            client {
-                workingDirectory project.file('run')
-
-
-                property 'forge.logging.markers', 'REGISTRIES'
-                property 'forge.logging.console.level', 'debug'
-
-                mods {
-                    bettermchats {
-                        source sourceSets.main
-                    }
-                }
-            }
-           mappings channel: 'snapshot', version: '20210309-1.16.5'
-           tasks.withType(JavaCompile) {
-          options.encoding = 'UTF-8'
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
-            server {
-                workingDirectory project.file('run')
-                property 'forge.logging.markers', 'REGISTRIES'
-                property 'forge.logging.console.level', 'debug'
-
-                mods {
-                    bettermchats {
-                        source sourceSets.main
-                    }
-                }
-            }
-
-            data {
-                workingDirectory project.file('run')
-                property 'forge.logging.markers', 'REGISTRIES'
-                property 'forge.logging.console.level', 'debug'
-
-                args '--mod', 'bettermchats', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-                mods {
-                    bettermchats {
-                        source sourceSets.main
-                    }
-                }
-            }
-        }
-    }
-
-
-    sourceSets {
-  main {
-    resources {
-      srcDirs = ['src/main/resources', 'src/generated/resources']
-    }
-  }
 }
 
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
-    dependencies {
-        minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
+version = '1.1.5'
+group = 'com.bettermchats.bettermchats'
+archivesBaseName = 'BetterMChats-1.16.5'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + ' (' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+minecraft {
+    mappings channel: 'snapshot', version: '20210309-1.16.5'
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                bettermchats { source sourceSets.main }
+            }
+        }
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                bettermchats { source sourceSets.main }
+            }
+        }
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', 'bettermchats', '--all',
+                 '--output', file('src/generated/resources/'),
+                 '--existing', file('src/main/resources/')
+            mods {
+                bettermchats { source sourceSets.main }
+            }
+        }
     }
+}
 
-    jar {
-        manifest {
-            attributes([
-                "Specification-Title": "bettermchats",
-                "Specification-Vendor": "bettermchats",
-                "Specification-Version": "1",
-                "Implementation-Title": project.name,
-                "Implementation-Version": "${version}",
-                "Implementation-Vendor" :"bettermchats",
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    maven { url = 'https://maven.minecraftforge.net' }
+    mavenCentral()
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "BetterMChats",
+                "Specification-Vendor"    : "bettermchats",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : "bettermchats",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-            ])
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
         }
     }
-
-
-    jar.finalizedBy('reobfJar') 
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                artifact jar
-            }
-        }
-        repositories {
-            maven {
-                url "file:///${project.projectDir}/mcmodsrepo"
-            }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
         }
     }
+}

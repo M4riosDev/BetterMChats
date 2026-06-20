@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = FiveMHudMod.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class MeAboveHeadRenderer {
@@ -46,7 +45,6 @@ public class MeAboveHeadRenderer {
         String safe = (text == null) ? "" : text.trim();
         if (safe.length() > 120) safe = safe.substring(0, 120);
         if (safe.isEmpty()) return;
-
         MAP.put(playerId, new Entry(safe, now + Math.max(10, durationTicks)));
     }
 
@@ -74,15 +72,15 @@ public class MeAboveHeadRenderer {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && mc.player.getDistance(p) > 64.0f) return;
 
-        MatrixStack ms = e.getMatrixStack();
+        MatrixStack ms     = e.getMatrixStack();
         IRenderTypeBuffer buffer = e.getRenderTypeBuffer();
-        int light = e.getPackedLight();
+        int light          = e.getPackedLight();
 
         ITextComponent text = new StringTextComponent("* " + action + " *")
-        .mergeStyle(TextFormatting.RED);
+                .mergeStyle(TextFormatting.RED);
 
-        float y = p.getHeight() + 0.85F;
-        renderLabel(p, text, ms, buffer, y, light);
+        float yOffset = p.getHeight() + 0.85F;
+        renderLabel(p, text, ms, buffer, yOffset, light);
     }
 
     private static void renderLabel(Entity entity, ITextComponent text, MatrixStack ms,
@@ -92,7 +90,7 @@ public class MeAboveHeadRenderer {
         FontRenderer fr = mc.fontRenderer;
 
         ms.push();
-        ms.translate(0.0D, (double) yOffset, 0.0D);
+        ms.translate(0.0D, yOffset, 0.0D);
         ms.rotate(rm.getCameraOrientation());
         ms.scale(-0.025F, -0.025F, 0.025F);
 
@@ -102,8 +100,8 @@ public class MeAboveHeadRenderer {
         float bgOpacity = mc.gameSettings.getTextBackgroundOpacity(0.25F);
         int bg = ((int) (bgOpacity * 255.0F) << 24);
 
-        fr.func_243247_a(text, x, 0, 0xFF0000, false, mat, buffer, true, bg, light);
-        fr.func_243247_a(text, x, 0, 0xFF0000, false, mat, buffer, false, 0, light);
+        fr.func_243247_a(text, x, 0, 0xFF0000, false, mat, buffer, true,  bg, light);
+        fr.func_243247_a(text, x, 0, 0xFF0000, false, mat, buffer, false, 0,  light);
 
         ms.pop();
     }
