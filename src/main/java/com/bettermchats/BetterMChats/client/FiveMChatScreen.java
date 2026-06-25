@@ -2,8 +2,8 @@ package com.bettermchats.BetterMChats.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.List;
 
@@ -46,12 +46,12 @@ public class FiveMChatScreen extends ChatScreen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(poseStack, mouseX, mouseY, partialTicks);
-        renderHistory(poseStack);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        renderHistory(guiGraphics);
     }
 
-    private void renderHistory(PoseStack poseStack) {
+    private void renderHistory(GuiGraphics guiGraphics) {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.player == null) return;
 
@@ -72,7 +72,6 @@ public class FiveMChatScreen extends ChatScreen {
 
         int idx = hist.size() - 1 - scrollEntries;
         if (idx < 0) idx = 0;
-        if (idx < 0) idx = 0;
 
         int cursorY = yStart;
         for (int i = idx; i >= 0; i--) {
@@ -80,7 +79,7 @@ public class FiveMChatScreen extends ChatScreen {
             HudOverlay.Measure mm = HudOverlay.measure(font, x, width, baseLineH, en.parsed);
             int y = cursorY - mm.height;
 
-            HudOverlay.drawOne(poseStack, mc, font, x, y, width, baseLineH, en.parsed, 1.0f);
+            HudOverlay.drawOne(guiGraphics, mc, font, x, y, width, baseLineH, en.parsed, 1.0f);
             cursorY = y - mm.gap;
 
             if (cursorY < 8) break;

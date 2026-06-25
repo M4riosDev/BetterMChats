@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 
 
 public class MeAboveHeadPacket {
-    /** P1 FIX: Single source of truth for the max /me text length. */
     public static final int MAX_TEXT_LENGTH = 256;
 
     private final UUID playerId;

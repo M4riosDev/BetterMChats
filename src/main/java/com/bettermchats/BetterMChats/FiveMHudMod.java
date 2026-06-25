@@ -30,9 +30,9 @@ public class FiveMHudMod {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerHudConfig.SPEC);
         MinecraftForge.EVENT_BUS.register(this);
 
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                modBus.addListener(FiveMHudMod::onRegisterOverlays)
+                modEventBus.addListener(FiveMHudMod::onRegisterOverlays)
         );
     }
 

@@ -66,8 +66,6 @@ public class MeAboveHeadRenderer {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && mc.player.distanceTo(p) > 64.0f) return;
 
-        // 1.19.4: RenderNameTagEvent no longer provides PoseStack/MultiBufferSource directly.
-        // We use the event's poseStack and multiBufferSource getters introduced in 1.19.4.
         PoseStack poseStack = e.getPoseStack();
         MultiBufferSource buffer = e.getMultiBufferSource();
         int light = e.getPackedLight();

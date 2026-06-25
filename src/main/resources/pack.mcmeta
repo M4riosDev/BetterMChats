@@ -1,6 +1,8 @@
 {
   "pack": {
-    "pack_format": 7,
-    "description": "M4R1OS FiveM HUD resources"
+    "description": {
+      "text": "${mod_id} resources"
+    },
+    "pack_format": 15
   }
 }

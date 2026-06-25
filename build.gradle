@@ -14,14 +14,14 @@ apply plugin: 'maven-publish'
 
 version = '1.1.6'
 group = 'com.bettermchats.bettermchats'
-archivesBaseName = 'BetterMChats-1.19.4'
+archivesBaseName = 'BetterMChats-1.20.1'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + ' (' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: '1.19.4'
+    mappings channel: 'official', version: '1.20.1'
 
     runs {
         client {
@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.4-45.2.0'
+    minecraft 'net.minecraftforge:forge:1.20.1-47.2.0'
 }
 
 tasks.withType(JavaCompile).configureEach {

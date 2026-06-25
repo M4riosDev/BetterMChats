@@ -15,7 +15,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.network.chat.Component;
 
-
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Locale;
@@ -76,10 +75,9 @@ public class ModCommands {
                             action = action.trim();
                             if (action.isEmpty()) return 0;
 
-
                             if (action.length() > MeAboveHeadPacket.MAX_TEXT_LENGTH) {
                                 ctx.getSource().sendSuccess(
-                                    Component.literal("[BetterMChats] Action message too long (max " + MeAboveHeadPacket.MAX_TEXT_LENGTH + " characters)."), false);
+                                    () -> Component.literal("[BetterMChats] Action message too long (max " + MeAboveHeadPacket.MAX_TEXT_LENGTH + " characters)."), false);
                                 return 0;
                             }
 
@@ -87,7 +85,7 @@ public class ModCommands {
                                 long remaining = RATE_LIMITER.getRemainingCooldown(player.getUUID(), "me", ME_COOLDOWN_MS);
                                 int seconds = (int) Math.ceil(remaining / 1000.0);
                                 ctx.getSource().sendSuccess(
-                                    Component.literal("[BetterMChats] You must wait " + seconds + " second(s) before sending another /me message."), false);
+                                    () -> Component.literal("[BetterMChats] You must wait " + seconds + " second(s) before sending another /me message."), false);
                                 return 0;
                             }
 
@@ -106,35 +104,35 @@ public class ModCommands {
                         .executes(ctx -> {
                             sendToAll(ctx.getSource().getServer(),
                                     StringArgumentType.getString(ctx, "raw"));
-                                ctx.getSource().sendSuccess(Component.literal("[BetterMChats] sent HUD raw."), false);
+                                ctx.getSource().sendSuccess(() -> Component.literal("[BetterMChats] sent HUD raw."), false);
                             return 1;
                         })));
 
-                    d.register(Commands.literal("clear")
-                        .requires(src -> src.hasPermission(3))
-                        .then(Commands.literal("chats")
-                            .then(Commands.literal("all")
-                                .executes(ctx -> {
-                                    int cleared = clearChatsAll(ctx.getSource().getServer());
-                                    ctx.getSource().sendSuccess(
-                                        Component.literal("[BetterMChats] cleared chats for all players (" + cleared + ")."),
-                                        false);
-                                    return 1;
-                                }))
-                            .then(Commands.literal("group")
-                                .then(Commands.argument("group", StringArgumentType.word())
-                                    .suggests(GROUP_SUGGESTIONS)
-                                    .executes(ctx -> {
-                                        String group = StringArgumentType.getString(ctx, "group");
-                                        return runClearByRole(ctx.getSource(), group);
-                                    })))
-                            .then(Commands.literal("user")
-                                .then(Commands.argument("username", StringArgumentType.word())
-                                    .suggests(PLAYER_SUGGESTIONS)
-                                    .executes(ctx -> {
-                                        String username = StringArgumentType.getString(ctx, "username");
-                                        return runClearByUsername(ctx.getSource(), username);
-                                    })))));
+        d.register(Commands.literal("clear")
+                .requires(src -> src.hasPermission(3))
+                .then(Commands.literal("chats")
+                    .then(Commands.literal("all")
+                        .executes(ctx -> {
+                            int cleared = clearChatsAll(ctx.getSource().getServer());
+                            ctx.getSource().sendSuccess(
+                                () -> Component.literal("[BetterMChats] cleared chats for all players (" + cleared + ")."),
+                                false);
+                            return 1;
+                        }))
+                    .then(Commands.literal("group")
+                        .then(Commands.argument("group", StringArgumentType.word())
+                            .suggests(GROUP_SUGGESTIONS)
+                            .executes(ctx -> {
+                                String group = StringArgumentType.getString(ctx, "group");
+                                return runClearByRole(ctx.getSource(), group);
+                            })))
+                    .then(Commands.literal("user")
+                        .then(Commands.argument("username", StringArgumentType.word())
+                            .suggests(PLAYER_SUGGESTIONS)
+                            .executes(ctx -> {
+                                String username = StringArgumentType.getString(ctx, "username");
+                                return runClearByUsername(ctx.getSource(), username);
+                            })))));
 
 
         addChannel(d, "staff",    "staff",    "STAFF",    "#7D3CFF", true,  2);
@@ -175,7 +173,7 @@ public class ModCommands {
                                 long remaining = RATE_LIMITER.getRemainingCooldown(player.getUUID(), cmd, cooldown);
                                 int seconds = (int) Math.ceil(remaining / 1000.0);
                                 ctx.getSource().sendSuccess(
-                                    Component.literal("[BetterMChats] You must wait " + seconds + " second(s) before sending another /" + cmd + " message."),
+                                    () -> Component.literal("[BetterMChats] You must wait " + seconds + " second(s) before sending another /" + cmd + " message."),
                                     false);
                                 return 0;
                             }
@@ -200,7 +198,6 @@ public class ModCommands {
                                 sendToAll(server, raw);
                             }
 
-                            ctx.getSource().sendSuccess(Component.literal("[BetterMChats] sent /" + cmd + "."), false);
 
                             return 1;
                         })));
@@ -273,8 +270,9 @@ public class ModCommands {
             return 0;
         }
 
+
         source.sendSuccess(
-            Component.literal("[BetterMChats] cleared chats for role '" + role + "' (" + cleared + ")."),
+            () -> Component.literal("[BetterMChats] cleared chats for role '" + role + "' (" + cleared + ")."),
                 false);
         return 1;
     }
@@ -287,7 +285,7 @@ public class ModCommands {
         }
 
         source.sendSuccess(
-            Component.literal("[BetterMChats] cleared chats for player '" + username + "' (" + cleared + ")."),
+            () -> Component.literal("[BetterMChats] cleared chats for player '" + username + "' (" + cleared + ")."),
                 false);
         return 1;
     }

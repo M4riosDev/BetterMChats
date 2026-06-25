@@ -2,10 +2,9 @@ package com.bettermchats.BetterMChats.client;
 
 import com.bettermchats.BetterMChats.FiveMHudMod;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
@@ -54,7 +53,7 @@ public class HudOverlay {
         while (HISTORY.size() > maxHistoryEntries) HISTORY.remove(0);
     }
 
-    public static final IGuiOverlay HUD_OVERLAY = (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
+    public static final IGuiOverlay HUD_OVERLAY = (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.options.hideGui) return;
         if (mc.screen instanceof FiveMChatScreen) return;
@@ -71,7 +70,6 @@ public class HudOverlay {
         int yStart;
         boolean growDown;
 
-        
         switch (ClientHudState.anchor) {
             case 1: // TOP_LEFT
                 x = offX; yStart = offY; growDown = true; break;
@@ -116,13 +114,13 @@ public class HudOverlay {
             int slideX = x - (int) ((1.0f - slideT) * 14.0f);
 
             if (growDown) {
-                int usedH = drawOne(poseStack, mc, font, slideX, cursorY, width, baseLineH, en.parsed, alpha);
+                int usedH = drawOne(guiGraphics, mc, font, slideX, cursorY, width, baseLineH, en.parsed, alpha);
                 cursorY += usedH;
                 if (cursorY > screenHeight - 24) break;
             } else {
                 Measure mm = measure(font, slideX, width, baseLineH, en.parsed);
                 int y = cursorY - mm.height;
-                drawOne(poseStack, mc, font, slideX, y, width, baseLineH, en.parsed, alpha);
+                drawOne(guiGraphics, mc, font, slideX, y, width, baseLineH, en.parsed, alpha);
                 cursorY = y - mm.gap;
                 if (cursorY < 8) break;
             }
@@ -137,7 +135,7 @@ public class HudOverlay {
     }
 
     @SubscribeEvent
-    public static void onClientChat(ClientChatReceivedEvent e) {
+    public static void onPlayerChat(ClientChatReceivedEvent e) {
         try {
             Component c = e.getMessage();
             String plain = (c == null) ? "" : c.getString();
@@ -156,19 +154,28 @@ public class HudOverlay {
                 return;
             }
 
-                Object boundType = e.getBoundChatType();
-                String boundText = (boundType == null) ? "" : boundType.toString().toLowerCase(Locale.ROOT);
-                boolean isSystem = boundText.contains("system") || boundText.contains("game_info");
+        } catch (Throwable t) {
+            FiveMHudMod.LOGGER.warn("[FiveMHud] onPlayerChat error", t);
+        }
+    }
 
-            if (isSystem) {
-                String raw = "[emoji=system][label=SYSTEM][box][color=#F1C40F] " + plain;
-                FiveMHudMod.LOGGER.debug("[FiveMHud] SYSTEM intercept msg={}", plain);
-                addRawMessage(raw);
-                e.setCanceled(true);
-            }
+    @SubscribeEvent
+    public static void onSystemChat(ClientChatReceivedEvent.System e) {
+        try {
+            Component c = e.getMessage();
+            String plain = (c == null) ? "" : c.getString();
+            if (plain == null) plain = "";
+            plain = plain.trim();
+            if (plain.isEmpty()) return;
+
+            String raw = "[emoji=system][label=SYSTEM][box][color=#F1C40F] " + plain;
+            FiveMHudMod.LOGGER.debug("[FiveMHud] SYSTEM intercept msg={}", plain);
+            addRawMessage(raw);
+            
+            e.setCanceled(true);
 
         } catch (Throwable t) {
-            FiveMHudMod.LOGGER.warn("[FiveMHud] onClientChat error", t);
+            FiveMHudMod.LOGGER.warn("[FiveMHud] onSystemChat error", t);
         }
     }
 
@@ -294,7 +301,7 @@ public class HudOverlay {
         return (!label.isEmpty()) ? (label + ": " + msg) : msg;
     }
 
-    static int drawOne(PoseStack poseStack, Minecraft mc, Font font,
+    static int drawOne(GuiGraphics guiGraphics, Minecraft mc, Font font,
                        int x, int y, int w, int baseLineH, Markup.Parsed p, float alpha) {
         int pad = 6;
         Measure m = measure(font, x, w, baseLineH, p);
@@ -302,7 +309,7 @@ public class HudOverlay {
         int a = (int) (alpha * 160);
         if (p.boxed) {
             int bg = (a << 24) | (p.bgColor & 0xFFFFFF);
-            GuiComponent.fill(poseStack, x, y, x + w, y + m.height, bg);
+            guiGraphics.fill(x, y, x + w, y + m.height, bg);
         }
 
         int cursorX = x + pad;
@@ -312,9 +319,8 @@ public class HudOverlay {
             if (rl != null) {
                 int s = ClientHudState.iconSize;
                 int iconY = y + Math.round((m.height - s) / 2.0f);
-                RenderSystem.setShaderTexture(0, rl);
                 RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
-                GuiComponent.blit(poseStack, cursorX, iconY, 0, 0, s, s, 14, 14);
+                guiGraphics.blit(rl, cursorX, iconY, 0, 0, s, s, 14, 14);
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             }
         }
@@ -323,7 +329,7 @@ public class HudOverlay {
         int ty = y + pad;
         int lineH = Math.max(9, baseLineH);
         for (String ln : m.lines) {
-            font.draw(poseStack, ln, m.textX, ty, msgColor);
+            guiGraphics.drawString(font, ln, m.textX, ty, msgColor, false);
             ty += lineH;
         }
 
