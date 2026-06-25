@@ -4,25 +4,25 @@ import com.bettermchats.BetterMChats.FiveMHudMod;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.lang.reflect.Method;
+
 @EventBusSubscriber(modid = FiveMHudMod.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.FORGE)
 public class HudOverlay {
-
 
     static final List<Entry> ENTRIES = new ArrayList<>();
     static final List<Entry> HISTORY = new ArrayList<>();
@@ -36,19 +36,19 @@ public class HudOverlay {
 
     public static void addRawMessage(String raw) {
         Markup.Parsed parsed = Markup.parse(raw);
-        FiveMHudMod.LOGGER.debug("[FiveMHud] addRawMessage raw={} parsed{boxed={},bg=#{},label={},emoji={},text={}}",
+        FiveMHudMod.LOGGER.debug("[FiveMHud] addRawMessage raw={} parsed{{boxed={},bg=#{},label={},emoji={},text={}}}",
                 raw,
                 parsed.boxed,
                 Integer.toHexString(parsed.bgColor & 0xFFFFFF),
                 parsed.label,
                 parsed.emojiKey,
                 parsed.text);
-        
+
         if (MuteManager.isChannelMuted(parsed.label)) {
             FiveMHudMod.LOGGER.debug("[FiveMHud] Message from muted channel '{}' - ignoring", parsed.label);
             return;
         }
-        
+
         long now = System.currentTimeMillis();
         ENTRIES.add(0, new Entry(parsed, now));
         while (ENTRIES.size() > ClientHudState.maxEntries) ENTRIES.remove(ENTRIES.size() - 1);
@@ -59,15 +59,23 @@ public class HudOverlay {
 
     @SubscribeEvent
     public static void onRender(RenderGameOverlayEvent.Post e) {
+        if (e.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.options.hideGui) return;
         if (mc.screen instanceof FiveMChatScreen) return;
 
-        PoseStack poseStack = new PoseStack();
-        Font font = mc.font;
-
+        PoseStack poseStack = e.getMatrixStack();
         int screenW = mc.getWindow().getGuiScaledWidth();
         int screenH = mc.getWindow().getGuiScaledHeight();
+
+        renderOverlay(poseStack, screenW, screenH);
+    }
+
+    public static void renderOverlay(PoseStack poseStack, int screenW, int screenH) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.options.hideGui) return;
+
+        Font font = mc.font;
 
         int width = Math.min(Math.min(ClientHudState.width, 260), screenW - 16);
 
@@ -163,9 +171,9 @@ public class HudOverlay {
                 return;
             }
 
-            net.minecraft.network.chat.ChatType chatType = e.getType();
-            boolean isSystem = chatType == net.minecraft.network.chat.ChatType.SYSTEM
-                    || chatType == net.minecraft.network.chat.ChatType.GAME_INFO;
+            ChatType chatType = e.getType();
+            boolean isSystem = chatType == ChatType.SYSTEM
+                    || chatType == ChatType.GAME_INFO;
 
             if (isSystem) {
                 String raw = "[emoji=system][label=SYSTEM][box][color=#F1C40F] " + plain;
@@ -236,11 +244,9 @@ public class HudOverlay {
                 if (word.isEmpty()) continue;
 
                 if (line.length() == 0) {
-
                     if (font.width(word) <= maxWidth) {
                         line.append(word);
                     } else {
-
                         hardBreakWord(font, out, word, maxWidth);
                     }
                 } else {
@@ -273,12 +279,10 @@ public class HudOverlay {
             char c = word.charAt(i);
             chunk.append(c);
             if (font.width(chunk.toString()) > maxWidth) {
-
                 if (chunk.length() > 1) {
                     out.add(chunk.substring(0, chunk.length() - 1));
                     chunk = new StringBuilder().append(c);
                 } else {
-
                     out.add(chunk.toString());
                     chunk.setLength(0);
                 }
@@ -331,7 +335,7 @@ public class HudOverlay {
     }
 
     static int drawOne(PoseStack poseStack, Minecraft mc, Font font,
-                               int x, int y, int w, int baseLineH, Markup.Parsed p, float alpha) {
+                       int x, int y, int w, int baseLineH, Markup.Parsed p, float alpha) {
 
         int pad = 6;
 
@@ -359,8 +363,7 @@ public class HudOverlay {
                 RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
 
                 int s = ClientHudState.iconSize;
-                int iconY = y + Math.round((m.height - s) / 2.0f);                
-                
+                int iconY = y + Math.round((m.height - s) / 2.0f);
                 blitIcon(poseStack, cursorX, iconY, s, s);
             }
         }
@@ -387,8 +390,8 @@ public class HudOverlay {
         }
     }
 
-    private static void blitIcon(com.mojang.blaze3d.vertex.PoseStack poseStack, int x, int y, int w, int h) {
-        com.mojang.blaze3d.systems.RenderSystem.setShader(net.minecraft.client.renderer.GameRenderer::getPositionTexShader);
-        net.minecraft.client.gui.GuiComponent.blit(poseStack, x, y, 0, 0, w, h, 14, 14);
+    private static void blitIcon(PoseStack poseStack, int x, int y, int w, int h) {
+        RenderSystem.setShader(net.minecraft.client.renderer.GameRenderer::getPositionTexShader);
+        GuiComponent.blit(poseStack, x, y, 0, 0, w, h, 14, 14);
     }
 }

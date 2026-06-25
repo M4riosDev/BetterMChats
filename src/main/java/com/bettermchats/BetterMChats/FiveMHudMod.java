@@ -19,7 +19,6 @@ public class FiveMHudMod {
     public static final String MODID = "bettermchats";
 
     public FiveMHudMod() {
-        LOGGER.info("[BetterMChats] Opened");
         LOGGER.info("[BetterMChats] Replacing vanilla ChatScreen with FiveMChatScreen");
 
         ModNetwork.init();

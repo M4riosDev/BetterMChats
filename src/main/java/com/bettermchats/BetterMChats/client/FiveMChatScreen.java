@@ -33,22 +33,22 @@ public class FiveMChatScreen extends ChatScreen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == 266) {
+        if (keyCode == 266) { // Page Up
             scrollEntries += 10;
             clampScroll();
             return true;
         }
-        if (keyCode == 267) {
+        if (keyCode == 267) { // Page Down
             scrollEntries -= 10;
             clampScroll();
             return true;
         }
-        if (keyCode == 268) { 
+        if (keyCode == 268) { // Home
             scrollEntries = Integer.MAX_VALUE;
             clampScroll();
             return true;
         }
-        if (keyCode == 269) {
+        if (keyCode == 269) { // End
             scrollEntries = 0;
             clampScroll();
             return true;
@@ -88,7 +88,6 @@ public class FiveMChatScreen extends ChatScreen {
         List<HudOverlay.Entry> hist = HudOverlay.HISTORY;
         if (hist.isEmpty()) return;
 
-
         int idx = hist.size() - 1 - scrollEntries;
         if (idx < 0) idx = 0;
 
@@ -104,7 +103,6 @@ public class FiveMChatScreen extends ChatScreen {
             if (cursorY < 8) break;
         }
     }
-
 
     @Override
     public void sendMessage(String message) {

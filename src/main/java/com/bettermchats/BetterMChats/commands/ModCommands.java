@@ -11,41 +11,39 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
-import java.util.Locale;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class ModCommands {
 
     private static final List<String> REGISTERED_GROUPS = new ArrayList<>();
     private static final RateLimiter RATE_LIMITER = new RateLimiter();
 
-    /** P2 FIX: Cooldown for /me (ms). Matches a typical channel cooldown. */
     private static final long ME_COOLDOWN_MS = 3000L;
-    
+
     private static final Map<String, Long> CHANNEL_COOLDOWNS = new HashMap<>();
-    
+
     static {
-        CHANNEL_COOLDOWNS.put("ooc", 3000L);        
-        CHANNEL_COOLDOWNS.put("twt", 3000L);       
-        CHANNEL_COOLDOWNS.put("staff", 1000L);     
-        CHANNEL_COOLDOWNS.put("police", 2000L);    
-        CHANNEL_COOLDOWNS.put("gov", 2000L);        
-        CHANNEL_COOLDOWNS.put("system", 1000L);    
-        CHANNEL_COOLDOWNS.put("announce", 5000L);   
-        CHANNEL_COOLDOWNS.put("robbery", 2000L);    
-        CHANNEL_COOLDOWNS.put("anon", 3000L);       
-        CHANNEL_COOLDOWNS.put("event", 3000L);      
-        CHANNEL_COOLDOWNS.put("ems", 2000L);        
-        CHANNEL_COOLDOWNS.put("ad", 5000L);        
+        CHANNEL_COOLDOWNS.put("ooc",      3000L);
+        CHANNEL_COOLDOWNS.put("twt",      3000L);
+        CHANNEL_COOLDOWNS.put("staff",    1000L);
+        CHANNEL_COOLDOWNS.put("police",   2000L);
+        CHANNEL_COOLDOWNS.put("gov",      2000L);
+        CHANNEL_COOLDOWNS.put("system",   1000L);
+        CHANNEL_COOLDOWNS.put("announce", 5000L);
+        CHANNEL_COOLDOWNS.put("robbery",  2000L);
+        CHANNEL_COOLDOWNS.put("anon",     3000L);
+        CHANNEL_COOLDOWNS.put("event",    3000L);
+        CHANNEL_COOLDOWNS.put("ems",      2000L);
+        CHANNEL_COOLDOWNS.put("ad",       5000L);
     }
 
     private static final SuggestionProvider<CommandSourceStack> GROUP_SUGGESTIONS = (ctx, builder) -> {
@@ -77,19 +75,19 @@ public class ModCommands {
                             action = action.trim();
                             if (action.isEmpty()) return 0;
 
-                            // P1 FIX: Explicit length guard before packet serialization.
                             if (action.length() > MeAboveHeadPacket.MAX_TEXT_LENGTH) {
                                 ctx.getSource().sendSuccess(
-                                    new TextComponent("[BetterMChats] Action message too long (max " + MeAboveHeadPacket.MAX_TEXT_LENGTH + " characters)."), false);
+                                    new TextComponent("[BetterMChats] Action message too long (max "
+                                            + MeAboveHeadPacket.MAX_TEXT_LENGTH + " characters)."), false);
                                 return 0;
                             }
 
-                            // P2 FIX: Rate-limit /me the same way chat channels are rate-limited.
                             if (!RATE_LIMITER.canMessage(player.getUUID(), "me", ME_COOLDOWN_MS)) {
                                 long remaining = RATE_LIMITER.getRemainingCooldown(player.getUUID(), "me", ME_COOLDOWN_MS);
                                 int seconds = (int) Math.ceil(remaining / 1000.0);
                                 ctx.getSource().sendSuccess(
-                                    new TextComponent("[BetterMChats] You must wait " + seconds + " second(s) before sending another /me message."), false);
+                                    new TextComponent("[BetterMChats] You must wait " + seconds
+                                            + " second(s) before sending another /me message."), false);
                                 return 0;
                             }
 
@@ -113,47 +111,45 @@ public class ModCommands {
                             return 1;
                         })));
 
-                    d.register(Commands.literal("clear")
-                        .requires(src -> src.hasPermission(3))
-                        .then(Commands.literal("chats")
-                            .then(Commands.literal("all")
-                                .executes(ctx -> {
-                                    int cleared = clearChatsAll(ctx.getSource().getServer());
-                                    ctx.getSource().sendSuccess(
-                                        new TextComponent("[BetterMChats] cleared chats for all players (" + cleared + ")."),
-                                        false);
-                                    return 1;
-                                }))
-                            .then(Commands.literal("group")
-                                .then(Commands.argument("group", StringArgumentType.word())
-                                    .suggests(GROUP_SUGGESTIONS)
-                                    .executes(ctx -> {
-                                        String group = StringArgumentType.getString(ctx, "group");
-                                        return runClearByRole(ctx.getSource(), group);
-                                    })))
-                            .then(Commands.literal("user")
-                                .then(Commands.argument("username", StringArgumentType.word())
-                                    .suggests(PLAYER_SUGGESTIONS)
-                                    .executes(ctx -> {
-                                        String username = StringArgumentType.getString(ctx, "username");
-                                        return runClearByUsername(ctx.getSource(), username);
-                                    })))));
+        d.register(Commands.literal("clear")
+                .requires(src -> src.hasPermission(3))
+                .then(Commands.literal("chats")
+                    .then(Commands.literal("all")
+                        .executes(ctx -> {
+                            int cleared = clearChatsAll(ctx.getSource().getServer());
+                            ctx.getSource().sendSuccess(
+                                new TextComponent("[BetterMChats] cleared chats for all players (" + cleared + ")."),
+                                false);
+                            return 1;
+                        }))
+                    .then(Commands.literal("group")
+                        .then(Commands.argument("group", StringArgumentType.word())
+                            .suggests(GROUP_SUGGESTIONS)
+                            .executes(ctx -> {
+                                String group = StringArgumentType.getString(ctx, "group");
+                                return runClearByRole(ctx.getSource(), group);
+                            })))
+                    .then(Commands.literal("user")
+                        .then(Commands.argument("username", StringArgumentType.word())
+                            .suggests(PLAYER_SUGGESTIONS)
+                            .executes(ctx -> {
+                                String username = StringArgumentType.getString(ctx, "username");
+                                return runClearByUsername(ctx.getSource(), username);
+                            })))));
 
-
-        addChannel(d, "staff",    "staff",    "STAFF",    "#7D3CFF", true,  2);
-        addChannel(d, "police",   "police",   "POLICE",   "#2E6BFF", false, 0);
-        addChannel(d, "gov",      "gov",      "GOV",      "#2ECC71", false, 0);
-        addChannel(d, "twt",      "twitter",  "TWITTER",  "#1DA1F2", false, 0);
-        addChannel(d, "system",   "system",   "SYSTEM",   "#FFF200", true,  2);
-        addChannel(d, "announce", "announce", "ANNOUNCE", "#34E8EB", false, 0);
-        addChannel(d, "ooc",      "ooc",      "OOC",      "#2B2B2B", false, 0);
-        addChannel(d, "robbery",  "robbery",  "ROBBERY",  "#FFA600", false, 0);
-        addChannel(d, "anon",     "anon",     "ANONYMOUS","#FF1100", false, 0);
-        addChannel(d, "event",    "event",    "EVENT",    "#9B59B6", false, 0);
-        addChannel(d, "ems",      "ems",      "EMS",      "#EB6363", false, 0);
-        addChannel(d, "ad",       "ad",       "ADVERTISEMENT",    "#00FF15", false, 0);
+        addChannel(d, "staff",    "staff",    "STAFF",         "#7D3CFF", true,  2);
+        addChannel(d, "police",   "police",   "POLICE",        "#2E6BFF", false, 0);
+        addChannel(d, "gov",      "gov",      "GOV",           "#2ECC71", false, 0);
+        addChannel(d, "twt",      "twitter",  "TWITTER",       "#1DA1F2", false, 0);
+        addChannel(d, "system",   "system",   "SYSTEM",        "#FFF200", true,  2);
+        addChannel(d, "announce", "announce", "ANNOUNCE",      "#34E8EB", false, 0);
+        addChannel(d, "ooc",      "ooc",      "OOC",           "#2B2B2B", false, 0);
+        addChannel(d, "robbery",  "robbery",  "ROBBERY",       "#FFA600", false, 0);
+        addChannel(d, "anon",     "anon",     "ANONYMOUS",     "#FF1100", false, 0);
+        addChannel(d, "event",    "event",    "EVENT",         "#9B59B6", false, 0);
+        addChannel(d, "ems",      "ems",      "EMS",           "#EB6363", false, 0);
+        addChannel(d, "ad",       "ad",       "ADVERTISEMENT", "#00FF15", false, 0);
     }
-
 
     private static void addChannel(CommandDispatcher<CommandSourceStack> d,
                                    String cmd,
@@ -172,13 +168,15 @@ public class ModCommands {
 
                             String msg = StringArgumentType.getString(ctx, "message");
                             ServerPlayer player = ctx.getSource().getPlayerOrException();
-                            Long cooldown = CHANNEL_COOLDOWNS.getOrDefault(cmd, 3000L);
-                            
+
+                            long cooldown = CHANNEL_COOLDOWNS.getOrDefault(cmd, 3000L);
+
                             if (!RATE_LIMITER.canMessage(player.getUUID(), cmd, cooldown)) {
                                 long remaining = RATE_LIMITER.getRemainingCooldown(player.getUUID(), cmd, cooldown);
                                 int seconds = (int) Math.ceil(remaining / 1000.0);
                                 ctx.getSource().sendSuccess(
-                                    new TextComponent("[BetterMChats] You must wait " + seconds + " second(s) before sending another /" + cmd + " message."),
+                                    new TextComponent("[BetterMChats] You must wait " + seconds
+                                            + " second(s) before sending another /" + cmd + " message."),
                                     false);
                                 return 0;
                             }
@@ -210,24 +208,16 @@ public class ModCommands {
                         })));
     }
 
-
     private static void sendToAll(MinecraftServer server, String raw) {
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
-            ModNetwork.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> p),
-                    new ChannelMsgPacket(raw)
-            );
+            ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> p), new ChannelMsgPacket(raw));
         }
     }
-
 
     private static void sendToStaff(MinecraftServer server, String raw, int permLevel) {
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
             if (p.hasPermissions(permLevel)) {
-                ModNetwork.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> p),
-                        new ChannelMsgPacket(raw)
-                );
+                ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> p), new ChannelMsgPacket(raw));
             }
         }
     }
@@ -235,10 +225,7 @@ public class ModCommands {
     private static int clearChatsAll(MinecraftServer server) {
         int count = 0;
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
-            ModNetwork.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> p),
-                    new ClearChatPacket()
-            );
+            ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> p), new ClearChatPacket());
             count++;
         }
         return count;
@@ -255,14 +242,10 @@ public class ModCommands {
         int count = 0;
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
             if (matchesRole(p, role)) {
-                ModNetwork.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> p),
-                        new ClearChatPacket()
-                );
+                ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> p), new ClearChatPacket());
                 count++;
             }
         }
-        
         return count;
     }
 
@@ -276,7 +259,6 @@ public class ModCommands {
             source.sendFailure(new TextComponent("[BetterMChats] no players found with role '" + role + "'."));
             return 0;
         }
-
         source.sendSuccess(
                 new TextComponent("[BetterMChats] cleared chats for role '" + role + "' (" + cleared + ")."),
                 false);
@@ -289,7 +271,6 @@ public class ModCommands {
             source.sendFailure(new TextComponent("[BetterMChats] player not found: " + username));
             return 0;
         }
-
         source.sendSuccess(
                 new TextComponent("[BetterMChats] cleared chats for player '" + username + "' (" + cleared + ")."),
                 false);
@@ -299,10 +280,7 @@ public class ModCommands {
     private static int clearChatsByUsername(MinecraftServer server, String username) {
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
             if (p.getName().getString().equalsIgnoreCase(username)) {
-                ModNetwork.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> p),
-                        new ClearChatPacket()
-                );
+                ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> p), new ClearChatPacket());
                 return 1;
             }
         }
@@ -310,16 +288,9 @@ public class ModCommands {
     }
 
     private static boolean matchesRole(ServerPlayer p, String role) {
-        if ("admin".equals(role)) {
-            return p.hasPermissions(3) && !p.hasPermissions(4);
-        }
-        if ("staff".equals(role)) {
-            return p.hasPermissions(2) && !p.hasPermissions(3);
-        }
-        if ("user".equals(role)) {
-            return !p.hasPermissions(2);
-        }
+        if ("admin".equals(role))  return p.hasPermissions(3) && !p.hasPermissions(4);
+        if ("staff".equals(role))  return p.hasPermissions(2) && !p.hasPermissions(3);
+        if ("user".equals(role))   return !p.hasPermissions(2);
         return false;
     }
-
 }

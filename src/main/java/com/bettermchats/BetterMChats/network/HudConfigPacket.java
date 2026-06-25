@@ -7,7 +7,6 @@ import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
 
-
 public class HudConfigPacket {
     public final int anchor;
     public final int offsetX;

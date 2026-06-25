@@ -7,7 +7,6 @@ import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
 
-
 public class ChannelMsgPacket {
     public final String raw;
 
