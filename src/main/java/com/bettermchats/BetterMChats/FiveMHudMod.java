@@ -24,7 +24,9 @@ public class FiveMHudMod {
         ModNetwork.init();
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerHudConfig.SPEC);
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(HudOverlay.class);
+        if (net.minecraftforge.fml.loading.FMLLoader.getDist() == net.minecraftforge.api.distmarker.Dist.CLIENT) {
+    MinecraftForge.EVENT_BUS.register(HudOverlay.class);
+}
     }
 
     @SubscribeEvent
