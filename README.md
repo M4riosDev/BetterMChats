@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/Minecraft-Multi--Version-green?logo=minecraft&style=flat-square" alt="Minecraft Multi-Version">
   <img src="https://img.shields.io/badge/Forge-Supported-orange?logo=curseforge&style=flat-square" alt="Forge Supported">
   <img src="https://img.shields.io/badge/Status-Active-blue?style=flat-square" alt="Status Active">
-  <img src="https://img.shields.io/badge/Version-1.1.5-blue?style=flat-square" alt="Version 1.1.6">
+  <img src="https://img.shields.io/badge/Version-1.1.6-blue?style=flat-square" alt="Version 1.1.6">
 </p>
 
 <p align="center">
