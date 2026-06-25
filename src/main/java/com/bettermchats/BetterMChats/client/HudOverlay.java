@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @EventBusSubscriber(modid = FiveMHudMod.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.FORGE)
 public class HudOverlay {
-
-    static final List<Entry> ENTRIES = new ArrayList<>();
+    static final List<Entry> ENTRIES = new CopyOnWriteArrayList<>();
     static final List<Entry> HISTORY = new ArrayList<>();
 
     public static int maxHistoryEntries = 500;
@@ -156,7 +156,6 @@ public class HudOverlay {
                 return;
             }
 
-                // Keep this compatible across Forge 1.19.4 variants without hard-binding chat type internals.
                 Object boundType = e.getBoundChatType();
                 String boundText = (boundType == null) ? "" : boundType.toString().toLowerCase(Locale.ROOT);
                 boolean isSystem = boundText.contains("system") || boundText.contains("game_info");
@@ -209,6 +208,7 @@ public class HudOverlay {
     }
 
     private static List<String> wrapLines(Font font, String text, int maxWidth) {
+        if (font == null) return List.of(text != null ? text : "");
         List<String> out = new ArrayList<>();
         if (text == null) text = "";
         text = text.replace("\r", "");

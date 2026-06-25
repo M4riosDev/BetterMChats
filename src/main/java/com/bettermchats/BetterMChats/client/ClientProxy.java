@@ -8,6 +8,11 @@ import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy implements IDistClientProxy {
+
+    public ClientProxy() {
+        MuteManager.init();
+    }
+
     @Override
     public void handleMeAboveHead(UUID playerId, String text, int durationTicks) {
         MeAboveHeadRenderer.put(playerId, text, durationTicks);

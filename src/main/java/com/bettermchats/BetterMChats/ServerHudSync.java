@@ -4,7 +4,6 @@ import com.bettermchats.BetterMChats.config.ServerHudConfig;
 import com.bettermchats.BetterMChats.network.ChannelMsgPacket;
 import com.bettermchats.BetterMChats.network.HudConfigPacket;
 import com.bettermchats.BetterMChats.network.ModNetwork;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.ModList;
@@ -28,8 +27,8 @@ import java.util.concurrent.CompletableFuture;
 public class ServerHudSync {
 
     private static final boolean ADMIN_UPDATE_NOTICE_ENABLED = true;
-    private static final String CURSEFORGE_FILES_URL = "https://www.curseforge.com/minecraft/mc-mods/roleplay-chats/files/all?page=1&pageSize=20&showAlphaFiles=hide";
-    private static final String CURSEFORGE_FILE_URL_PREFIX = "https://www.curseforge.com/minecraft/mc-mods/roleplay-chats/files/";
+    
+    private static final String GITHUB_API_URL = "https://api.github.com/repos/M4riosDev/BetterMChats/releases/latest";
     private static final int HTTP_TIMEOUT_MS = 5000;
 
     private static final Map<UUID, String> LAST_NOTIFIED_VERSION = new HashMap<>();
@@ -107,50 +106,38 @@ public class ServerHudSync {
                 .map(container -> container.getModInfo().getVersion().toString())
                 .orElse("unknown");
 
-        UpdateInfo info = fetchLatestFromCurseForge();
-        String latestVersion = info.latestVersion;
+        UpdateInfo info = fetchLatestVersion();
 
         CURRENT_VERSION = currentVersion;
-        RESOLVED_LATEST_VERSION = latestVersion;
+        RESOLVED_LATEST_VERSION = info.latestVersion;
         RESOLVED_DOWNLOAD_URL = info.downloadUrl;
-        UPDATE_AVAILABLE = !latestVersion.isEmpty() && isNewerVersion(latestVersion, currentVersion);
+        UPDATE_AVAILABLE = !info.latestVersion.isEmpty() && isNewerVersion(info.latestVersion, currentVersion);
         UPDATE_CHECK_DONE = true;
     }
 
-    private static UpdateInfo fetchLatestFromCurseForge() {
+    private static UpdateInfo fetchLatestVersion() {
         try {
-            String html = httpGet(CURSEFORGE_FILES_URL);
-            if (html.isEmpty()) return UpdateInfo.empty();
-
-            String fileId = extractFirst(html, "\\/minecraft\\/mc-mods\\/roleplay-chats\\/files\\/(\\d+)");
-            String version = extractLatestVersion(html);
-
-            if (version.isEmpty()) return UpdateInfo.empty();
-
-            String downloadUrl = fileId.isEmpty() ? "" : (CURSEFORGE_FILE_URL_PREFIX + fileId + "/download");
-            return new UpdateInfo(version, downloadUrl);
+            String json = httpGet(GITHUB_API_URL);
+            if (!json.isEmpty()) {
+                String tag     = extractJsonString(json, "tag_name");
+                String htmlUrl = extractJsonString(json, "html_url");
+                String version = extractVersionToken(tag);
+                if (!version.isEmpty()) {
+                    FiveMHudMod.LOGGER.info("[BetterMChats] Update check OK (GitHub): {}", version);
+                    return new UpdateInfo(version, htmlUrl);
+                }
+            }
         } catch (Exception ex) {
-            FiveMHudMod.LOGGER.warn("[BetterMChats] Update check failed from CurseForge: {}", ex.getMessage());
-            return UpdateInfo.empty();
+            FiveMHudMod.LOGGER.warn("[BetterMChats] Update check failed: {}", ex.getMessage());
         }
+        return UpdateInfo.empty();
     }
 
-    private static String extractLatestVersion(String html) {
-        String[] patterns = new String[] {
-                "\\\"displayName\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"",
-                "\\\"fileName\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"",
-                "Roleplay\\s*Chats[^0-9]*(\\d+\\.\\d+(?:\\.\\d+)*)"
-        };
-
-        for (String p : patterns) {
-            Matcher m = Pattern.compile(p).matcher(html);
-            while (m.find()) {
-                String candidate = m.group(1);
-                String version = extractVersionToken(candidate);
-                if (!version.isEmpty()) return version;
-            }
-        }
-
+    private static String extractJsonString(String json, String key) {
+        if (json == null || key == null) return "";
+        Pattern p = Pattern.compile("\"" + Pattern.quote(key) + "\"\\s*:\\s*\"((?:[^\"\\\\]|\\\\.)*)\"");
+        Matcher m = p.matcher(json);
+        if (m.find()) return m.group(1).replace("\\\"", "\"").replace("\\\\", "\\");
         return "";
     }
 
@@ -161,19 +148,16 @@ public class ServerHudSync {
         return "";
     }
 
-    private static String extractFirst(String text, String regex) {
-        if (text == null) return "";
-        Matcher m = Pattern.compile(regex).matcher(text);
-        if (m.find()) return m.group(1);
-        return "";
-    }
-
     private static String httpGet(String urlText) throws Exception {
         HttpURLConnection conn = (HttpURLConnection) new URL(urlText).openConnection();
         conn.setRequestMethod("GET");
         conn.setConnectTimeout(HTTP_TIMEOUT_MS);
         conn.setReadTimeout(HTTP_TIMEOUT_MS);
         conn.setRequestProperty("User-Agent", "BetterMChats-UpdateChecker/1.0");
+        conn.setRequestProperty("Accept", "application/json");
+
+        int code = conn.getResponseCode();
+        if (code != 200) throw new Exception("HTTP " + code + " from " + urlText);
 
         try (InputStream in = conn.getInputStream(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             byte[] buf = new byte[4096];

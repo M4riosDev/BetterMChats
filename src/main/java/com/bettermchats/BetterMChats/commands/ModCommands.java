@@ -28,8 +28,6 @@ public class ModCommands {
 
     private static final List<String> REGISTERED_GROUPS = new ArrayList<>();
     private static final RateLimiter RATE_LIMITER = new RateLimiter();
-
-    /** P2 FIX: Cooldown for /me (ms). Matches a typical channel cooldown. */
     private static final long ME_COOLDOWN_MS = 3000L;
     
     private static final Map<String, Long> CHANNEL_COOLDOWNS = new HashMap<>();
@@ -78,14 +76,13 @@ public class ModCommands {
                             action = action.trim();
                             if (action.isEmpty()) return 0;
 
-                            // P1 FIX: Explicit length guard before packet serialization.
+
                             if (action.length() > MeAboveHeadPacket.MAX_TEXT_LENGTH) {
                                 ctx.getSource().sendSuccess(
                                     Component.literal("[BetterMChats] Action message too long (max " + MeAboveHeadPacket.MAX_TEXT_LENGTH + " characters)."), false);
                                 return 0;
                             }
 
-                            // P2 FIX: Rate-limit /me the same way chat channels are rate-limited.
                             if (!RATE_LIMITER.canMessage(player.getUUID(), "me", ME_COOLDOWN_MS)) {
                                 long remaining = RATE_LIMITER.getRemainingCooldown(player.getUUID(), "me", ME_COOLDOWN_MS);
                                 int seconds = (int) Math.ceil(remaining / 1000.0);
@@ -310,7 +307,7 @@ public class ModCommands {
 
     private static boolean matchesRole(ServerPlayer p, String role) {
         if ("admin".equals(role)) {
-            return p.hasPermissions(3) && !p.hasPermissions(4);
+            return p.hasPermissions(3);
         }
         if ("staff".equals(role)) {
             return p.hasPermissions(2) && !p.hasPermissions(3);

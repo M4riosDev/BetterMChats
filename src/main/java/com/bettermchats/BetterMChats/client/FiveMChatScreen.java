@@ -45,7 +45,6 @@ public class FiveMChatScreen extends ChatScreen {
         if (scrollEntries > max) scrollEntries = max;
     }
 
-    // 1.19.4 uses PoseStack in screen render methods.
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         super.render(poseStack, mouseX, mouseY, partialTicks);
@@ -72,6 +71,7 @@ public class FiveMChatScreen extends ChatScreen {
         if (hist.isEmpty()) return;
 
         int idx = hist.size() - 1 - scrollEntries;
+        if (idx < 0) idx = 0;
         if (idx < 0) idx = 0;
 
         int cursorY = yStart;

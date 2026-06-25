@@ -18,6 +18,10 @@ public class MuteManager {
     private static File configDir;
 
     static {
+        
+    }
+
+    public static void init() {
         try {
             configDir = new File(Minecraft.getInstance().gameDirectory, "config/bettermchats");
             if (!configDir.exists()) {

@@ -6,7 +6,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class ModNetwork {
-    private static final String PROTOCOL = "1";
+    private static final String PROTOCOL = "2";
     public static SimpleChannel CHANNEL;
     private static int id = 0;
 
