@@ -2,32 +2,32 @@ modLoader="javafml"
 loaderVersion="[43,)"
 license="All Rights Reserved"
 
+issueTrackerURL="https://github.com/M4riosDev/BetterMChats/issues"
+
 [[mods]]
 modId="bettermchats"
-version="1.1.5"
-displayName="FiveM-style HUD & Chat"
+version="${file.jarVersion}"
+displayName="BetterMChats"
+displayURL="https://github.com/M4riosDev/BetterMChats"
 logoFile="logo.png"
-authors="m4r1os, MNV, Saralis Dev"
-
+credits="M4riosDev"
+authors="M4riosDev"
 description='''
-FiveM-style HUD + chat messages for Minecraft.
-
-Features:
-- Rich markup (emoji/labels/boxes/colors)
-- Staff-only routing / channels
-- Clean, configurable dispatch-style messages
+A FiveM-style chat channels and HUD overlay mod for Minecraft Forge.
+Replaces the default vanilla chat with a modern, animated HUD system.
 '''
 
 [[dependencies.bettermchats]]
-modId="forge"
-mandatory=true
-versionRange="[43,)"
-ordering="NONE"
-side="BOTH"
+    modId="forge"
+    mandatory=true
+    versionRange="[43,)"
+    ordering="NONE"
+    side="BOTH"
 
 [[dependencies.bettermchats]]
-modId="minecraft"
-mandatory=true
-versionRange="[1.19.2)"
-ordering="NONE"
-side="BOTH"
+    modId="minecraft"
+    mandatory=true
+    # Updated to prevent loading on 1.19.4
+    versionRange="[1.19.2,1.19.4)"
+    ordering="NONE"
+    side="BOTH"

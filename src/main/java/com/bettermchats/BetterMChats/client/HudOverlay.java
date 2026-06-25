@@ -70,7 +70,6 @@ public class HudOverlay {
         int yStart;
         boolean growDown;
 
-        
         switch (ClientHudState.anchor) {
             case 1: // TOP_LEFT
                 x = offX; yStart = offY; growDown = true; break;
@@ -155,8 +154,14 @@ public class HudOverlay {
                 return;
             }
 
+            String typeName = "";
+            try {
+                Object boundType = e.getBoundChatType();
+                typeName = (boundType == null) ? "" : boundType.toString().toLowerCase();
+            } catch (Throwable ignored) {
+                FiveMHudMod.LOGGER.debug("[FiveMHud] getBoundChatType() unavailable on this Forge version");
+            }
 
-            String typeName = e.getBoundChatType().toString().toLowerCase();
             boolean isSystem = typeName.contains("system") || typeName.contains("game_info");
 
             if (isSystem) {
@@ -170,6 +175,8 @@ public class HudOverlay {
             FiveMHudMod.LOGGER.warn("[FiveMHud] onClientChat error", t);
         }
     }
+
+    // Layout helpers
 
     static class Measure {
         final List<String> lines;
@@ -245,12 +252,12 @@ public class HudOverlay {
     private static void hardBreakWord(Font font, List<String> out, String word, int maxWidth) {
         StringBuilder chunk = new StringBuilder();
         for (int i = 0; i < word.length(); i++) {
-            char c = word.charAt(i);
-            chunk.append(c);
+            char ch = word.charAt(i);
+            chunk.append(ch);
             if (font.width(chunk.toString()) > maxWidth) {
                 if (chunk.length() > 1) {
                     out.add(chunk.substring(0, chunk.length() - 1));
-                    chunk = new StringBuilder().append(c);
+                    chunk = new StringBuilder().append(ch);
                 } else {
                     out.add(chunk.toString());
                     chunk.setLength(0);
