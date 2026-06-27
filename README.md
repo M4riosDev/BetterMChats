@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/Forge-Supported-orange?logo=curseforge&style=flat-square" alt="NeoForge Supported">
   <img src="https://img.shields.io/badge/Status-Active-blue?style=flat-square" alt="Status Active">
   <img src="https://img.shields.io/badge/Version-1.1.6-blue?style=flat-square" alt="Version 1.1.6">
-  <img src="https://img.shields.io/badge/dynamic/json?url=https://betterapi.m4rios.dev/roleplaychats/downloads&query=$.message&label=Downloads&logo=modrinth&style=flat-square">
+  <img src="https://img.shields.io/badge/dynamic/json?url=https://betterapi.m4rios.dev/roleplaychats/downloads&query=$.message&label=Downloads&style=flat-square">
 </p>
 <p align="center">
   <a href="https://modrinth.com/mod/roleplaychats">
