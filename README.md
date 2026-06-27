@@ -46,12 +46,12 @@ Each Minecraft version is maintained in a separate branch:
 
 | Minecraft | Status | Branch |
 |:---------:|:------:|:------:|
-| 1.16.5 | Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.16.5) |
+| 1.16.5 | Unstable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.16.5) |
 | 1.17.1 | Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.17.1) |
 | 1.18.2 | Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.18.2) |
 | 1.19.2 | Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.19.2) |
 | 1.19.4 | Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.19.4) |
-| 1.20.1 | Planned | Coming ?/06/2026 |
+| 1.20.1 | Stable |[Open](https://github.com/M4riosDev/BetterMChats/tree/1.19.4) |
 
 ---
 
