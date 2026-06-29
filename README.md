@@ -44,11 +44,11 @@ BetterMChats replaces Minecraft's default chat with a clean, animated HUD system
 
 Starting from **version 1.1.7**, the following changes are being introduced:
 
-- Support for **Minecraft 1.16.5 and 1.17.1 will be discontinued**
+- Support for **Minecraft 1.16.5 and 1.19.4 will be discontinued**
 - The mod is transitioning from **Forge** to **NeoForge**
 - Future updates will focus on **newer Minecraft versions only**
 
-> Older versions (1.16.5 / 1.17.1) will remain available but will **no longer receive updates**.
+> versions (1.16.5 / 1.19.4) will remain available but will **no longer receive updates**.
 
 ---
 
@@ -60,9 +60,9 @@ Each Minecraft version is maintained in a separate branch:
 |:---------:|:------:|:------:|:------:|
 | 1.16.5 | Forge | ⚠️ Legacy | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.16.5) |
 | 1.17.1 | Forge | ⚠️ Legacy | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.17.1) |
-| 1.18.2 | Forge | ✅ Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.18.2) |
-| 1.19.2 | Forge | ✅ Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.19.2) |
-| 1.19.4 | Forge | ✅ Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.19.4) |
+| 1.18.2 | Forge | ⚠️ Legacy | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.18.2) |
+| 1.19.2 | Forge | ⚠️ Legacy | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.19.2) |
+| 1.19.4 | Forge | ⚠️ Legacy | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.19.4) |
 | 1.20.1 | Forge | ✅ Stable | [Open](https://github.com/M4riosDev/BetterMChats/tree/1.20.1) |
 
 ---
