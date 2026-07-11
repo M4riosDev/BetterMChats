@@ -71,9 +71,17 @@ Each Minecraft version is maintained in a separate branch:
 ---
 
 ## Most Downloaded Versions
-<p align="center">
-  <img src="https://betterapi.m4rios.dev/versions" alt="Most downloaded versions of BetterMChats">
-</p>
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://betterapi.m4rios.dev/versions" alt="Most downloaded versions of Roleplay Chats">
+    </td>
+    <td align="center">
+      <img src="https://betterapi.m4rios.dev/mc-versions" alt="Most downloaded Minecraft Version of Roleplay Chats">
+    </td>
+  </tr>
+</table>
 
 ---
 
