@@ -25,13 +25,11 @@
 ---
 
 ## About
-
 BetterMChats replaces Minecraft's default chat with a clean, animated HUD system inspired by FiveM and GTA roleplay environments. Designed for roleplay servers and advanced server setups.
 
 ---
 
 ## Features
-
 - 💬 **Custom chat channels** — organize communication with dedicated roleplay channels
 - 🎨 **Styled messages** — icons, labels, and colors for each channel type
 - 🖥️ **HUD overlay** — replaces vanilla chat with a sleek on-screen display
@@ -41,9 +39,7 @@ BetterMChats replaces Minecraft's default chat with a clean, animated HUD system
 ---
 
 ## ⚠️ Important Notice (v1.1.7+)
-
 Starting from **version 1.1.7**, the following changes are being introduced:
-
 - Support for **Minecraft 1.16.5 and 1.19.4 will be discontinued**
 - The mod is transitioning from **Forge** to **NeoForge**
 - Future updates will focus on **newer Minecraft versions only**
@@ -53,7 +49,6 @@ Starting from **version 1.1.7**, the following changes are being introduced:
 ---
 
 ## Versions
-
 Each Minecraft version is maintained in a separate branch:
 
 | Minecraft | Loader | Status | Branch |
@@ -68,7 +63,6 @@ Each Minecraft version is maintained in a separate branch:
 ---
 
 ## Download
-
 | Platform | Link |
 |:--------:|:----:|
 | <img src="https://img.shields.io/badge/Modrinth-00AF5C?logo=modrinth&style=flat-square" alt="Modrinth"> | [modrinth.com/mod/roleplaychats](https://modrinth.com/mod/roleplaychats) |
@@ -76,8 +70,14 @@ Each Minecraft version is maintained in a separate branch:
 
 ---
 
-## Authors
+## Most Downloaded Versions
+<p align="center">
+  <img src="https://betterapi.m4rios.dev/versions" alt="Most downloaded versions of BetterMChats">
+</p>
 
+---
+
+## Authors
 | Name | Role |
 |:----:|:----:|
 | **m4r1os** | Original concept & development |
