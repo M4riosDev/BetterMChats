@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "bettermchats",
+	"version": "${version}",
+	"name": "FiveM-style HUD & Chat",
+	"description": "FiveM-style HUD + chat messages for Minecraft.\n\nFeatures:\n- Rich markup (emoji/labels/boxes/colors)\n- Staff-only routing / channels\n- Clean, configurable dispatch-style messages",
+	"authors": [
+		"m4r1os",
+		"MNV",
+		"Saralis Dev"
+	],
+	"contact": {},
+	"license": "All-Rights-Reserved",
+	"icon": "icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.bettermchats.bettermchats.BetterMChats"
+		],
+		"client": [
+			"com.bettermchats.bettermchats.client.BetterMChatsClient"
+		]
+	},
+	"mixins": [
+		"bettermchats.client.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.0",
+		"fabric-api": "*",
+		"minecraft": "1.21.1",
+		"java": ">=21"
+	}
+}
