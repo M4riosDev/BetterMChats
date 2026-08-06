@@ -1,11 +1,11 @@
-# BetterMChats (1.20.1)
+# BetterMChats (1.21.1)
 
-![Minecraft](https://img.shields.io/badge/Minecraft-1.20.1-brightgreen?logo=minecraft)
-![Forge](https://img.shields.io/badge/Forge-43%2B-orange?logo=curseforge)
-![Java](https://img.shields.io/badge/Java-17%2B-red?logo=openjdk)
+![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-brightgreen?logo=minecraft)
+![NeoForge](https://img.shields.io/badge/NeoForge-21.1.235-orange?logo=curseforge)
+![Java](https://img.shields.io/badge/Java-21%2B-red?logo=openjdk)
 ![Version](https://img.shields.io/badge/Version-1.1.6-blue)
 
-> FiveM-style chat channels and HUD overlay for Minecraft Forge 1.20.1
+> FiveM-style chat channels and HUD overlay for Minecraft NeoForge 1.21.1
 
 A server-side mod (with a required client component) that replaces Minecraft's default chat with a sleek, GTA/FiveM-inspired HUD. Messages appear as styled, icon-tagged boxes that slide in and fade out, making it ideal for roleplay servers and immersive custom experiences.
 
@@ -27,9 +27,9 @@ A server-side mod (with a required client component) that replaces Minecraft's d
 
 | Dependency | Version |
 |---|---|
-| Minecraft | 1.20.1 |
-| Minecraft Forge | 45+ |
-| Java | 17+ |
+| Minecraft | 1.21.1 |
+| NeoForge | 21.1.235+ |
+| Java | 21+ |
 
 > ⚠️ Both the **server** and **client** must have this mod installed.
 

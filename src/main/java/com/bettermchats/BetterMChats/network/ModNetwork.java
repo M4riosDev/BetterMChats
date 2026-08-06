@@ -1,49 +1,19 @@
 package com.bettermchats.BetterMChats.network;
 
-import com.bettermchats.BetterMChats.FiveMHudMod;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-public class ModNetwork {
-    private static final String PROTOCOL = "2";
-    public static SimpleChannel CHANNEL;
-    private static int id = 0;
+public final class ModNetwork {
+    private static final String PROTOCOL = "3";
 
-    public static void init() {
-        CHANNEL = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation(FiveMHudMod.MODID, "main"),
-                () -> PROTOCOL,
-                PROTOCOL::equals,
-                PROTOCOL::equals
-        );
-
-        CHANNEL.registerMessage(nextId(), ChannelMsgPacket.class,
-                ChannelMsgPacket::encode,
-                ChannelMsgPacket::decode,
-                ChannelMsgPacket::handle
-        );
-
-        CHANNEL.registerMessage(nextId(), HudConfigPacket.class,
-                HudConfigPacket::encode,
-                HudConfigPacket::decode,
-                HudConfigPacket::handle
-        );
-
-        CHANNEL.registerMessage(nextId(), MeAboveHeadPacket.class,
-                MeAboveHeadPacket::encode,
-                MeAboveHeadPacket::decode,
-                MeAboveHeadPacket::handle
-        );
-
-        CHANNEL.registerMessage(nextId(), ClearChatPacket.class,
-                ClearChatPacket::encode,
-                ClearChatPacket::decode,
-                ClearChatPacket::handle
-        );
+    private ModNetwork() {
     }
 
-    private static int nextId() {
-        return id++;
+    public static void register(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(PROTOCOL);
+        registrar.playToClient(ChannelMsgPacket.TYPE, ChannelMsgPacket.STREAM_CODEC, ChannelMsgPacket::handle);
+        registrar.playToClient(HudConfigPacket.TYPE, HudConfigPacket.STREAM_CODEC, HudConfigPacket::handle);
+        registrar.playToClient(MeAboveHeadPacket.TYPE, MeAboveHeadPacket.STREAM_CODEC, MeAboveHeadPacket::handle);
+        registrar.playToClient(ClearChatPacket.TYPE, ClearChatPacket.STREAM_CODEC, ClearChatPacket::handle);
     }
 }

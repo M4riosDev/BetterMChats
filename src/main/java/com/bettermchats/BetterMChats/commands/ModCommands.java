@@ -3,7 +3,6 @@ package com.bettermchats.BetterMChats.commands;
 import com.bettermchats.BetterMChats.network.ChannelMsgPacket;
 import com.bettermchats.BetterMChats.network.ClearChatPacket;
 import com.bettermchats.BetterMChats.network.MeAboveHeadPacket;
-import com.bettermchats.BetterMChats.network.ModNetwork;
 import com.bettermchats.BetterMChats.util.RateLimiter;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -15,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.network.chat.Component;
 
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Locale;
 import java.util.ArrayList;
@@ -90,10 +89,8 @@ public class ModCommands {
                             }
 
                             int durationTicks = 100;
-                            ModNetwork.CHANNEL.send(
-                                    PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
-                                    new MeAboveHeadPacket(player.getUUID(), action, durationTicks)
-                            );
+                            PacketDistributor.sendToPlayersTrackingEntityAndSelf(player,
+                                    new MeAboveHeadPacket(player.getUUID(), action, durationTicks));
 
                             return 1;
                         })));
@@ -206,10 +203,7 @@ public class ModCommands {
 
     private static void sendToAll(MinecraftServer server, String raw) {
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
-            ModNetwork.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> p),
-                    new ChannelMsgPacket(raw)
-            );
+            PacketDistributor.sendToPlayer(p, new ChannelMsgPacket(raw));
         }
     }
 
@@ -217,10 +211,7 @@ public class ModCommands {
     private static void sendToStaff(MinecraftServer server, String raw, int permLevel) {
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
             if (p.hasPermissions(permLevel)) {
-                ModNetwork.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> p),
-                        new ChannelMsgPacket(raw)
-                );
+                PacketDistributor.sendToPlayer(p, new ChannelMsgPacket(raw));
             }
         }
     }
@@ -228,10 +219,7 @@ public class ModCommands {
     private static int clearChatsAll(MinecraftServer server) {
         int count = 0;
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
-            ModNetwork.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> p),
-                    new ClearChatPacket()
-            );
+            PacketDistributor.sendToPlayer(p, new ClearChatPacket());
             count++;
         }
         return count;
@@ -248,10 +236,7 @@ public class ModCommands {
         int count = 0;
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
             if (matchesRole(p, role)) {
-                ModNetwork.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> p),
-                        new ClearChatPacket()
-                );
+                PacketDistributor.sendToPlayer(p, new ClearChatPacket());
                 count++;
             }
         }
@@ -293,10 +278,7 @@ public class ModCommands {
     private static int clearChatsByUsername(MinecraftServer server, String username) {
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
             if (p.getName().getString().equalsIgnoreCase(username)) {
-                ModNetwork.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> p),
-                        new ClearChatPacket()
-                );
+                PacketDistributor.sendToPlayer(p, new ClearChatPacket());
                 return 1;
             }
         }

@@ -2,18 +2,18 @@ package com.bettermchats.BetterMChats.client;
 
 import com.bettermchats.BetterMChats.FiveMHudMod;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
+import net.neoforged.neoforge.client.event.ScreenEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@EventBusSubscriber(modid = FiveMHudMod.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = FiveMHudMod.MODID, value = Dist.CLIENT)
 public class HudOverlay {
     static final List<Entry> ENTRIES = new CopyOnWriteArrayList<>();
     static final List<Entry> HISTORY = new ArrayList<>();
@@ -53,11 +53,13 @@ public class HudOverlay {
         while (HISTORY.size() > maxHistoryEntries) HISTORY.remove(0);
     }
 
-    public static final IGuiOverlay HUD_OVERLAY = (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+    public static void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.options.hideGui) return;
         if (mc.screen instanceof FiveMChatScreen) return;
 
+        int screenWidth = guiGraphics.guiWidth();
+        int screenHeight = guiGraphics.guiHeight();
         Font font = mc.font;
         int width = Math.min(Math.min(ClientHudState.width, 260), screenWidth - 16);
         int baseLineH = ClientHudState.lineHeight;
@@ -125,7 +127,7 @@ public class HudOverlay {
                 if (cursorY < 8) break;
             }
         }
-    };
+    }
 
     @SubscribeEvent
     public static void onScreenOpen(ScreenEvent.Opening e) {

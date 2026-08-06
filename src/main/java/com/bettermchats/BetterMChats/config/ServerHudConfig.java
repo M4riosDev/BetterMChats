@@ -1,33 +1,33 @@
 package com.bettermchats.BetterMChats.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 
 public class ServerHudConfig {
 
-    public static final ForgeConfigSpec SPEC;
+    public static final ModConfigSpec SPEC;
 
-    public static final ForgeConfigSpec.EnumValue<Anchor> ANCHOR;
-    public static final ForgeConfigSpec.IntValue OFFSET_X;
-    public static final ForgeConfigSpec.IntValue OFFSET_Y;
+    public static final ModConfigSpec.EnumValue<Anchor> ANCHOR;
+    public static final ModConfigSpec.IntValue OFFSET_X;
+    public static final ModConfigSpec.IntValue OFFSET_Y;
 
-    public static final ForgeConfigSpec.IntValue WIDTH;
-    public static final ForgeConfigSpec.IntValue LINE_HEIGHT;
-    public static final ForgeConfigSpec.IntValue GAP;
+    public static final ModConfigSpec.IntValue WIDTH;
+    public static final ModConfigSpec.IntValue LINE_HEIGHT;
+    public static final ModConfigSpec.IntValue GAP;
 
-    public static final ForgeConfigSpec.IntValue MAX_ENTRIES;
-    public static final ForgeConfigSpec.IntValue LIFE_MS;
-    public static final ForgeConfigSpec.IntValue FADE_MS;
+    public static final ModConfigSpec.IntValue MAX_ENTRIES;
+    public static final ModConfigSpec.IntValue LIFE_MS;
+    public static final ModConfigSpec.IntValue FADE_MS;
 
-    public static final ForgeConfigSpec.BooleanValue SHOW_ICON;
-    public static final ForgeConfigSpec.IntValue ICON_SIZE;
+    public static final ModConfigSpec.BooleanValue SHOW_ICON;
+    public static final ModConfigSpec.IntValue ICON_SIZE;
 
     public enum Anchor {
         TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT
     }
 
     static {
-        ForgeConfigSpec.Builder b = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder b = new ModConfigSpec.Builder();
 
         b.push("hud");
 

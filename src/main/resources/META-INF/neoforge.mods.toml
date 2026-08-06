@@ -1,0 +1,33 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="bettermchats"
+version="1.1.6"
+displayName="FiveM-style HUD & Chat"
+logoFile="logo.png"
+authors="m4r1os, MNV, Saralis Dev"
+
+description='''
+FiveM-style HUD + chat messages for Minecraft.
+
+Features:
+- Rich markup (emoji/labels/boxes/colors)
+- Staff-only routing / channels
+- Clean, configurable dispatch-style messages
+'''
+
+[[dependencies.bettermchats]]
+    modId="neoforge"
+    type="required"
+    versionRange="[21.1.235,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.bettermchats]]
+    modId="minecraft"
+    type="required"
+    versionRange="[1.21.1]"
+    ordering="NONE"
+    side="BOTH"

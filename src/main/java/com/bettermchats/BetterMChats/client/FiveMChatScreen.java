@@ -22,9 +22,9 @@ public class FiveMChatScreen extends ChatScreen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if (delta > 0) scrollEntries += 2;
-        else if (delta < 0) scrollEntries -= 2;
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (scrollY > 0) scrollEntries += 2;
+        else if (scrollY < 0) scrollEntries -= 2;
         clampScroll();
         return true;
     }

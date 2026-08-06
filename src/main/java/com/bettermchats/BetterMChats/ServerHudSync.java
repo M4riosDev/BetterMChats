@@ -3,14 +3,13 @@ package com.bettermchats.BetterMChats;
 import com.bettermchats.BetterMChats.config.ServerHudConfig;
 import com.bettermchats.BetterMChats.network.ChannelMsgPacket;
 import com.bettermchats.BetterMChats.network.HudConfigPacket;
-import com.bettermchats.BetterMChats.network.ModNetwork;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.fml.ModList;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -23,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(modid = FiveMHudMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = FiveMHudMod.MODID)
 public class ServerHudSync {
 
     private static final boolean ADMIN_UPDATE_NOTICE_ENABLED = true;
@@ -61,7 +60,7 @@ public class ServerHudSync {
                 ServerHudConfig.ICON_SIZE.get()
         );
 
-        ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> sp), pkt);
+        PacketDistributor.sendToPlayer(sp, pkt);
         sendAdminUpdateNotice(sp);
     }
 
@@ -95,8 +94,8 @@ public class ServerHudSync {
                 + " | Latest: " + latestVersion
                 + (downloadUrl.isEmpty() ? "" : " | Download: " + downloadUrl);
 
-        ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ChannelMsgPacket(line1));
-        ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ChannelMsgPacket(line2));
+        PacketDistributor.sendToPlayer(player, new ChannelMsgPacket(line1));
+        PacketDistributor.sendToPlayer(player, new ChannelMsgPacket(line2));
         LAST_NOTIFIED_VERSION.put(playerId, latestVersion);
     }
 

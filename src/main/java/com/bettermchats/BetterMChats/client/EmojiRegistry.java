@@ -28,7 +28,7 @@ public class EmojiRegistry {
     }
 
     private static void put(String key, String path) {
-        MAP.put(key, new ResourceLocation(FiveMHudMod.MODID, path));
+        MAP.put(key, ResourceLocation.fromNamespaceAndPath(FiveMHudMod.MODID, path));
     }
 
     public static ResourceLocation get(String key) {

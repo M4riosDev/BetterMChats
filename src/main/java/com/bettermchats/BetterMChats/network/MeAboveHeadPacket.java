@@ -1,15 +1,21 @@
 package com.bettermchats.BetterMChats.network;
 
-import com.bettermchats.BetterMChats.util.DistProxy;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import com.bettermchats.BetterMChats.FiveMHudMod;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import java.lang.reflect.Method;
 import java.util.UUID;
-import java.util.function.Supplier;
 
-
-public class MeAboveHeadPacket {
+public class MeAboveHeadPacket implements CustomPacketPayload {
     public static final int MAX_TEXT_LENGTH = 256;
+    public static final Type<MeAboveHeadPacket> TYPE = new Type<>(
+            ResourceLocation.fromNamespaceAndPath(FiveMHudMod.MODID, "me_above_head"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MeAboveHeadPacket> STREAM_CODEC =
+            StreamCodec.ofMember(MeAboveHeadPacket::encode, MeAboveHeadPacket::decode);
 
     private final UUID playerId;
     private final String text;
@@ -17,27 +23,35 @@ public class MeAboveHeadPacket {
 
     public MeAboveHeadPacket(UUID playerId, String text, int durationTicks) {
         this.playerId = playerId;
-        this.text = text;
+        this.text = text == null ? "" : text;
         this.durationTicks = durationTicks;
     }
 
-    public static void encode(MeAboveHeadPacket msg, FriendlyByteBuf buf) {
-        buf.writeUUID(msg.playerId);
-        buf.writeUtf(msg.text, MAX_TEXT_LENGTH);
-        buf.writeVarInt(msg.durationTicks);
+    private void encode(RegistryFriendlyByteBuf buf) {
+        buf.writeUUID(playerId);
+        buf.writeUtf(text, MAX_TEXT_LENGTH);
+        buf.writeVarInt(durationTicks);
     }
 
-    public static MeAboveHeadPacket decode(FriendlyByteBuf buf) {
-        UUID id = buf.readUUID();
-        String text = buf.readUtf(MAX_TEXT_LENGTH);
-        int dur = buf.readVarInt();
-        return new MeAboveHeadPacket(id, text, dur);
+    private static MeAboveHeadPacket decode(RegistryFriendlyByteBuf buf) {
+        return new MeAboveHeadPacket(
+                buf.readUUID(),
+                buf.readUtf(MAX_TEXT_LENGTH),
+                buf.readVarInt());
     }
 
-    public static void handle(MeAboveHeadPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            DistProxy.CLIENT.handleMeAboveHead(msg.playerId, msg.text, msg.durationTicks);
-        });
-        ctx.get().setPacketHandled(true);
+    public static void handle(MeAboveHeadPacket msg, IPayloadContext context) {
+        try {
+            Class<?> cls = Class.forName("com.bettermchats.BetterMChats.client.MeAboveHeadRenderer");
+            Method method = cls.getDeclaredMethod("put", UUID.class, String.class, int.class);
+            method.invoke(null, msg.playerId, msg.text, msg.durationTicks);
+        } catch (Throwable t) {
+            FiveMHudMod.LOGGER.error("[BetterMChats] Failed to render /me text", t);
+        }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }
